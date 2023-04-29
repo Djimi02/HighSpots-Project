@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -36,7 +37,19 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         this.getSupportActionBar().hide();
 
+        autoLogIn();
+
         initViews();
+    }
+
+    private void autoLogIn() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            return;
+        }
+        Toast.makeText(LogInActivity.this, "Login was successful!", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
+        finish();
     }
 
     private void initViews() {
