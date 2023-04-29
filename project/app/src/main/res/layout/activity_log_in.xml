@@ -7,13 +7,63 @@
     tools:context=".LogInActivity"
     android:background="@drawable/log_in_background">
 
-    <TextView
+
+    <EditText
+        android:id="@+id/LogInPageEmailET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/LogInPageTitle"
+        app:layout_constraintVertical_bias="0.17000002" />
+
+    <TextView
+        android:id="@+id/LogInPageTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Log In "
+        android:textSize="40sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.07999998" />
 
+    <EditText
+        android:id="@+id/LogInPagePasswordET"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/LogInPageEmailET"
+        app:layout_constraintStart_toStartOf="@+id/LogInPageEmailET"
+        app:layout_constraintTop_toBottomOf="@+id/LogInPageEmailET" />
+
+    <Button
+        android:id="@+id/LogInPageLogInBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Login"
+        app:layout_constraintEnd_toEndOf="@+id/LogInPagePasswordET"
+        app:layout_constraintStart_toStartOf="@+id/LogInPagePasswordET"
+        app:layout_constraintTop_toBottomOf="@+id/LogInPagePasswordET" />
+
+    <TextView
+        android:id="@+id/LogInPageRegisterBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Register"
+        app:layout_constraintEnd_toEndOf="@+id/LogInPageLogInBTN"
+        app:layout_constraintStart_toStartOf="@+id/LogInPageLogInBTN"
+        app:layout_constraintTop_toBottomOf="@+id/LogInPageLogInBTN" />
 </androidx.constraintlayout.widget.ConstraintLayout>
