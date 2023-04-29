@@ -75,4 +75,8 @@ public class UserDataRepository {
     public void removeListener(UserDataListener listener) {
         this.listeners.remove(listener);
     }
+
+    public User getUser() {
+        return this.user;
+    }
 }

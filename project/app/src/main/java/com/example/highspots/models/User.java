@@ -6,6 +6,8 @@ public class User {
     private String nickName;
     private String email;
 
+    public User() { }
+
     public User(String dbID, String nickName, String email) {
         this.dbID = dbID;
         this.nickName = nickName;
