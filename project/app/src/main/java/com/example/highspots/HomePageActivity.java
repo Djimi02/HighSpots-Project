@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,6 +18,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private ImageButton goToSettingsBTN;
     private TextView nickNameTV;
     private TextView emailTV;
+
+    private Button testBTN;
 
     /* Database */
     UserDataRepository repository;
@@ -35,6 +38,15 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.goToSettingsBTN = findViewById(R.id.HomePageSettingsBTN);
         this.nickNameTV = findViewById(R.id.HomePageUserNickname);
         this.emailTV = findViewById(R.id.HomePageUserEmail);
+
+        // delete later
+        this.testBTN = findViewById(R.id.testBTN);
+        testBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomePageActivity.this, MapsActivity.class));
+            }
+        });
 
         goToSettingsBTN.setOnClickListener(new View.OnClickListener() {
             @Override
