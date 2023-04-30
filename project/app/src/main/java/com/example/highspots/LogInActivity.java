@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -30,6 +32,9 @@ public class LogInActivity extends AppCompatActivity {
     private EditText passwordET;
     private Button logInBTN;
     private TextView goToRegisterBTN;
+
+    /* Vars */
+    private long lastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,11 @@ public class LogInActivity extends AppCompatActivity {
         logInBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < 1000){
+                    return;
+                }
+                lastClickTime = SystemClock.elapsedRealtime();
+                //Log.e(String.valueOf(LogInActivity.this), "LOGIN");
                 logIn();
                 hideSoftKeyboard(LogInActivity.this);
             }
