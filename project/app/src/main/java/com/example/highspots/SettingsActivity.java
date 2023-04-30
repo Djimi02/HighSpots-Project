@@ -2,10 +2,13 @@ package com.example.highspots;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
@@ -15,6 +18,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     /* Views */
     private Button logOutBTN;
+    private EditText nickNameET;
+    private Button saveNicknameET;
+
+    /* Database */
+    private UserDataRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +30,18 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         this.getSupportActionBar().hide();
 
+        initVars(); // should be called before initViews()
         initViews();
     }
 
     private void initViews() {
         this.logOutBTN = findViewById(R.id.SettingsPageLogOutBTN);
+        this.nickNameET = findViewById(R.id.SettingsPageNicknameET);
+        this.saveNicknameET = findViewById(R.id.SettingsPageSaveNicknameBTN);
+
+        if (repository.getUser() != null) {
+            nickNameET.setText(repository.getUser().getNickName());
+        }
 
         logOutBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,6 +50,30 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this, "LogOut was successful!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        saveNicknameET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateNickName();
+                hideSoftKeyboard(SettingsActivity.this);
+                Toast.makeText(SettingsActivity.this, "Nickname updated successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initVars() {
+        this.repository = UserDataRepository.getInstance();
+    }
+
+    private void updateNickName() {
+        String newNickName = nickNameET.getText().toString().trim();
+
+        if (newNickName.length() < 4) {
+            nickNameET.setError("Nickname should be at least 4 characters long!");
+            return;
+        }
+
+        repository.updateNickName(newNickName);
     }
 
     /** Redirects to login page and clears the back stack. */
@@ -46,5 +85,14 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
         UserDataRepository.deleteCurrentUserData();
+    }
+
+    private void hideSoftKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 
 import com.example.highspots.interfaces.UserDataListener;
 import com.example.highspots.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -66,6 +70,10 @@ public class UserDataRepository {
         for (UserDataListener listener : this.listeners) {
             listener.retrieveUserData();
         }
+    }
+
+    public void updateNickName(String newNickName) {
+        usersDataReference.child(this.userID).child("nickName").setValue(newNickName);
     }
 
     public void addListener(UserDataListener listener) {
