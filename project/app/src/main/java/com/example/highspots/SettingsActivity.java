@@ -1,10 +1,12 @@
 package com.example.highspots;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -12,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -20,6 +24,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button logOutBTN;
     private EditText nickNameET;
     private Button saveNicknameET;
+    private BottomNavigationView bottomNavigationView;
 
     /* Database */
     private UserDataRepository repository;
@@ -38,6 +43,30 @@ public class SettingsActivity extends AppCompatActivity {
         this.logOutBTN = findViewById(R.id.SettingsPageLogOutBTN);
         this.nickNameET = findViewById(R.id.SettingsPageNicknameET);
         this.saveNicknameET = findViewById(R.id.SettingsPageSaveNicknameBTN);
+        this.bottomNavigationView = findViewById(R.id.nav_view_home_page);
+
+        // Configure Bottom Nav View
+        bottomNavigationView.setSelectedItemId(R.id.navigation_settings);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()){
+                    case R.id.navigation_home:
+                        Intent intent1 = new Intent(getApplicationContext(), HomePageActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent1);
+                        return true;
+                    case R.id.navigation_settings:
+                        return true;
+                    case R.id.navigation_map:
+                        startActivity(new Intent(SettingsActivity.this, MapsActivity.class));
+                        return true;
+                }
+
+                return false;
+            }
+        });
 
         if (repository.getUser() != null) {
             nickNameET.setText(repository.getUser().getNickName());
@@ -94,5 +123,11 @@ public class SettingsActivity extends AppCompatActivity {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.bottomNavigationView.setSelectedItemId(R.id.navigation_settings);
     }
 }

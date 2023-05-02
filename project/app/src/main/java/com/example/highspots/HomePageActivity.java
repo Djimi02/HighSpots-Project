@@ -1,9 +1,11 @@
 package com.example.highspots;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -11,15 +13,15 @@ import android.widget.TextView;
 
 import com.example.highspots.interfaces.UserDataListener;
 import com.example.highspots.repositories.UserDataRepository;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 public class HomePageActivity extends AppCompatActivity implements UserDataListener {
 
     /* Views */
-    private ImageButton goToSettingsBTN;
     private TextView nickNameTV;
     private TextView emailTV;
-
-    private Button testBTN;
+    private BottomNavigationView bottomNavigationView;
 
     /* Database */
     UserDataRepository repository;
@@ -35,27 +37,33 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     }
 
     private void initViews() {
-        this.goToSettingsBTN = findViewById(R.id.HomePageSettingsBTN);
         this.nickNameTV = findViewById(R.id.HomePageUserNickname);
         this.emailTV = findViewById(R.id.HomePageUserEmail);
+        this.bottomNavigationView = findViewById(R.id.nav_view_home_page);
 
-        // delete later
-        this.testBTN = findViewById(R.id.testBTN);
-        testBTN.setOnClickListener(new View.OnClickListener() {
+        // Configure Bottom Nav View
+        bottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomePageActivity.this, MapsActivity.class));
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()){
+                    case R.id.navigation_home:
+                        return true;
+                    case R.id.navigation_settings:
+                        Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
+                        intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                        startActivity(intent1);
+                        return true;
+                    case R.id.navigation_map:
+                        startActivity(new Intent(HomePageActivity.this, MapsActivity.class));
+                        return true;
+                }
+
+                return false;
             }
         });
 
-        goToSettingsBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
-            }
-        });
     }
 
     private void initVars() {
@@ -67,5 +75,11 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     public void retrieveUserData() {
         this.nickNameTV.setText(repository.getUser().getNickName());
         this.emailTV.setText(repository.getUser().getEmail());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
 }
