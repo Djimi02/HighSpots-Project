@@ -107,12 +107,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        NavigationView mapsMenu = findViewById(R.id.nav_view);
-        RangeSlider slider = (RangeSlider) mapsMenu.getMenu().getItem(1).getActionView();
-        slider.setValues(5f);
-        slider.setValueFrom(5);
-        slider.setValueTo(50);
-        slider.setStepSize(5);
+//        NavigationView mapsMenu = findViewById(R.id.nav_view);
+//        RangeSlider slider = (RangeSlider) mapsMenu.getMenu().getItem(1).getActionView();
+//        slider.setValues(5f);
+//        slider.setValueFrom(5);
+//        slider.setValueTo(50);
+//        slider.setStepSize(5);
 
     }
 }

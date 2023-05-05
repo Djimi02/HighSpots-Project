@@ -12,6 +12,10 @@
         app:actionViewClass="com.google.android.material.slider.RangeSlider"
         tools:ignore="MenuTitle" />
 
+    <item
+        android:title="asd"
+        app:actionViewClass="android.widget.ScrollView" />
+
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
