@@ -5,9 +5,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,13 +20,22 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.slider.RangeSlider;
+import com.google.android.material.slider.Slider;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    /* Google Maps */
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
+
+    /* Views */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +106,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return false;
             }
         });
+
+        NavigationView mapsMenu = findViewById(R.id.nav_view);
+        RangeSlider slider = (RangeSlider) mapsMenu.getMenu().getItem(1).getActionView();
+        slider.setValues(5f);
+        slider.setValueFrom(5);
+        slider.setValueTo(50);
+        slider.setStepSize(5);
 
     }
 }
