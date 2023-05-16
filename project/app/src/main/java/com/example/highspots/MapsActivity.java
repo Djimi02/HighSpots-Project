@@ -10,9 +10,12 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.highspots.enums.Features;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -28,7 +31,9 @@ import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -46,6 +51,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* Menu Views */
     TextView distanceTV;
     Slider menuSlider;
+    GridLayout gridLayout;
+    List<CheckBox> featureCheckBoxes = new ArrayList<>();
+    Button filterBTN;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +147,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 distanceTV.setText("Choose distance: " + menuSlider.getValue() + " km");
+            }
+        });
+
+        // fill in grid layout with categories as check boxes
+        this.gridLayout = findViewById(R.id.mapMenuGridLayout);
+        gridLayout.setRowCount(Features.values().length / 2 + 1);
+        gridLayout.setColumnCount(2);
+        for (Features features : Features.values()) {
+            CheckBox checkBox = new CheckBox(getApplicationContext());
+            checkBox.setText(features.toString());
+            checkBox.setChecked(false);
+            checkBox.setTextSize(18);
+            featureCheckBoxes.add(checkBox);
+            gridLayout.addView(checkBox);
+        }
+
+        this.filterBTN = findViewById(R.id.mapsMenuFilterBTN);
+        filterBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
     }
