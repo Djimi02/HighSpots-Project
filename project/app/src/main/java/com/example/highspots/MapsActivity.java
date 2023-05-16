@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,7 +36,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
 
+    /* Variables */
+
     /* Views */
+    DrawerLayout drawerLayout;
+    ImageButton menuBTN;
+    BottomNavigationView bottomNavigationView;
+
+    /* Menu Views */
+    TextView distanceTV;
+    Slider menuSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +78,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
+        initViews();
 
-        // Views fix later
-        DrawerLayout drawerLayout = findViewById(R.id.mapsLayout);
+    }
 
-        ImageButton menu = findViewById(R.id.mapsMenuBTN);
-        menu.setOnClickListener(new View.OnClickListener() {
+    private void initViews() {
+        this.drawerLayout = findViewById(R.id.mapsLayout);
+
+        this.menuBTN = findViewById(R.id.mapsMenuBTN);
+        menuBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.open();
@@ -81,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.nav_view_maps);
+        this.bottomNavigationView = findViewById(R.id.nav_view_maps);
         // Configure Bottom Nav View
         bottomNavigationView.setSelectedItemId(R.id.navigation_map);
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -107,12 +120,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-//        NavigationView mapsMenu = findViewById(R.id.nav_view);
-//        RangeSlider slider = (RangeSlider) mapsMenu.getMenu().getItem(1).getActionView();
-//        slider.setValues(5f);
-//        slider.setValueFrom(5);
-//        slider.setValueTo(50);
-//        slider.setStepSize(5);
+        initMenuViews();
+    }
 
+    private void initMenuViews() {
+        this.menuSlider = findViewById(R.id.mapsMenuSlider);
+
+        this.distanceTV = findViewById(R.id.mapsMenuChooseDistanceTV);
+        distanceTV.setText("Choose distance: " + menuSlider.getValue() + " km");
+
+        // should be added after this.menuTitleTV is init
+        menuSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                distanceTV.setText("Choose distance: " + menuSlider.getValue() + " km");
+            }
+        });
     }
 }
