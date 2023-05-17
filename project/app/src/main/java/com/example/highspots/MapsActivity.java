@@ -47,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     DrawerLayout drawerLayout;
     ImageButton menuBTN;
     BottomNavigationView bottomNavigationView;
+    ImageButton addSpotIBTN;
 
     /* Menu Views */
     TextView distanceTV;
@@ -127,6 +128,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 return false;
+            }
+        });
+
+        this.addSpotIBTN = findViewById(R.id.mapsAddSpotBTN);
+        addSpotIBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
 
