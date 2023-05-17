@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.highspots.enums.Features;
+import com.example.highspots.enums.Feature;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -170,9 +170,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // fill in grid layout with categories as check boxes
         this.menuGridLayout = findViewById(R.id.mapMenuGridLayout);
-        menuGridLayout.setRowCount(Features.values().length / 2 + 1);
+        menuGridLayout.setRowCount(Feature.values().length / 2 + 1);
         menuGridLayout.setColumnCount(2);
-        for (Features features : Features.values()) {
+        for (Feature features : Feature.values()) {
             CheckBox checkBox = new CheckBox(getApplicationContext());
             checkBox.setText(features.toString());
             checkBox.setChecked(false);
@@ -204,9 +204,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initDialogViews(View popupView) {
         this.addSpotDialogGridLayout = popupView.findViewById(R.id.addSpotDialogGridLayout);
-        addSpotDialogGridLayout.setRowCount(Features.values().length / 2 + 1);
+        addSpotDialogGridLayout.setRowCount(Feature.values().length / 2 + 1);
         addSpotDialogGridLayout.setColumnCount(2);
-        for (Features features : Features.values()) {
+        for (Feature features : Feature.values()) {
             CheckBox checkBox = new CheckBox(getApplicationContext());
             checkBox.setText(features.toString());
             checkBox.setChecked(false);

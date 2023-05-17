@@ -2,7 +2,7 @@ package com.example.highspots.enums;
 
 import androidx.annotation.NonNull;
 
-public enum Features {
+public enum Feature {
 
     // LOCATION BASED
     MOUNTAIN("Mountain"),
@@ -47,7 +47,7 @@ public enum Features {
 
     final String feature;
 
-    Features(String feature) {
+    Feature(String feature) {
         this.feature = feature;
     }
 
