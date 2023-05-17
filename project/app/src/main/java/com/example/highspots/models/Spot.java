@@ -11,11 +11,14 @@ public class Spot {
     private List<Feature> features = new ArrayList<>();
     private List<Pot> pots = new ArrayList<>();
 
+    private String location;
+
     public Spot() { }
 
-    public Spot(List<Feature> features, List<Pot> pots) {
+    public Spot(List<Feature> features, List<Pot> pots, String location) {
         this.features = features;
         this.pots = pots;
+        this.location = location;
     }
 
     public List<Feature> getFeatures() {
@@ -32,6 +35,14 @@ public class Spot {
 
     public void setPots(List<Pot> pots) {
         this.pots = pots;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public void addPot(Pot pot) {
