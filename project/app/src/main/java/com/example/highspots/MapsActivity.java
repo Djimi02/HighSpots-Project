@@ -114,11 +114,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Intent intent1 = new Intent(getApplicationContext(), HomePageActivity.class);
                         intent1.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent1);
+                        finish();
                         return true;
                     case R.id.navigation_settings:
                         Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                         startActivity(intent);
+                        finish();
                         return true;
                     case R.id.navigation_map:
                         return true;
