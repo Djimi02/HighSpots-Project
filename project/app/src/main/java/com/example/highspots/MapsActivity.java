@@ -42,17 +42,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* Variables */
 
     /* Views */
-    DrawerLayout drawerLayout;
-    ImageButton menuBTN;
-    BottomNavigationView bottomNavigationView;
-    ImageButton addSpotIBTN;
+    private DrawerLayout drawerLayout;
+    private ImageButton menuBTN;
+    private BottomNavigationView bottomNavigationView;
+    private ImageButton addSpotIBTN;
 
     /* Menu Views */
-    TextView distanceTV;
-    Slider menuSlider;
-    GridLayout menuGridLayout;
-    List<CheckBox> menuFeatureCheckBoxes = new ArrayList<>();
-    Button filterBTN;
+    private TextView distanceTV;
+    private Slider menuSlider;
+    private GridLayout menuGridLayout;
+    private List<CheckBox> menuFeatureCheckBoxes = new ArrayList<>();
+    private Button filterBTN;
 
     /* Dialog */
     private AlertDialog.Builder dialogBuilder;
