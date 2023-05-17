@@ -5,12 +5,15 @@ import androidx.annotation.NonNull;
 public enum Pot {
 
     // Pots here
-    not_a_pot(null);
+    not_a_pot(null, null);
 
     final private String pot;
 
-    Pot(String pot) {
+    final private PotType potType;
+
+    Pot(String pot, PotType potType) {
         this.pot = pot;
+        this.potType = potType;
     }
 
     @NonNull
