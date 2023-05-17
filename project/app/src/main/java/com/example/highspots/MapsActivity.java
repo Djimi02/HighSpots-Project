@@ -1,18 +1,21 @@
 package com.example.highspots;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.highspots.enums.Features;
@@ -24,15 +27,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.internal.NavigationMenuItemView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.slider.RangeSlider;
 import com.google.android.material.slider.Slider;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -52,9 +50,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* Menu Views */
     TextView distanceTV;
     Slider menuSlider;
-    GridLayout gridLayout;
-    List<CheckBox> featureCheckBoxes = new ArrayList<>();
+    GridLayout menuGridLayout;
+    List<CheckBox> menuFeatureCheckBoxes = new ArrayList<>();
     Button filterBTN;
+
+    /* Dialog */
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+
+    /* Dialog Views */
+    private GridLayout addSpotDialogGridLayout;
+    private List<CheckBox> addSpotDialogFeatureCheckBoxes = new ArrayList<>();
+    private Button addSpotDialogSaveBTN;
+    private Spinner addSpotDialogLocOptionsSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +107,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 drawerLayout.open();
-
             }
         });
 
@@ -135,7 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addSpotIBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                openAddSpotDialog();
             }
         });
 
@@ -162,16 +169,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // fill in grid layout with categories as check boxes
-        this.gridLayout = findViewById(R.id.mapMenuGridLayout);
-        gridLayout.setRowCount(Features.values().length / 2 + 1);
-        gridLayout.setColumnCount(2);
+        this.menuGridLayout = findViewById(R.id.mapMenuGridLayout);
+        menuGridLayout.setRowCount(Features.values().length / 2 + 1);
+        menuGridLayout.setColumnCount(2);
         for (Features features : Features.values()) {
             CheckBox checkBox = new CheckBox(getApplicationContext());
             checkBox.setText(features.toString());
             checkBox.setChecked(false);
             checkBox.setTextSize(18);
-            featureCheckBoxes.add(checkBox);
-            gridLayout.addView(checkBox);
+            menuFeatureCheckBoxes.add(checkBox);
+            menuGridLayout.addView(checkBox);
         }
 
         this.filterBTN = findViewById(R.id.mapsMenuFilterBTN);
@@ -179,6 +186,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 
+            }
+        });
+    }
+
+    private void openAddSpotDialog() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.add_spot_dialog, null);
+
+        initDialogViews(popupView);
+
+        // show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void initDialogViews(View popupView) {
+        this.addSpotDialogGridLayout = popupView.findViewById(R.id.addSpotDialogGridLayout);
+        addSpotDialogGridLayout.setRowCount(Features.values().length / 2 + 1);
+        addSpotDialogGridLayout.setColumnCount(2);
+        for (Features features : Features.values()) {
+            CheckBox checkBox = new CheckBox(getApplicationContext());
+            checkBox.setText(features.toString());
+            checkBox.setChecked(false);
+            checkBox.setTextSize(23);
+            addSpotDialogFeatureCheckBoxes.add(checkBox);
+            addSpotDialogGridLayout.addView(checkBox);
+        }
+
+        this.addSpotDialogSaveBTN = popupView.findViewById(R.id.addSpotSaveBTN);
+        addSpotDialogSaveBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        this.addSpotDialogLocOptionsSpinner = popupView.findViewById(R.id.addSpotDialogLocationSpinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.location_options, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        addSpotDialogLocOptionsSpinner.setAdapter(adapter);
+        addSpotDialogLocOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("position : " + position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
     }
