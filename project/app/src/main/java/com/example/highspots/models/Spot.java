@@ -9,12 +9,13 @@ import java.util.List;
 public class Spot {
 
     private List<String> features = new ArrayList<>();
-
     private String location;
+    private String dbID;
 
     public Spot() { }
 
-    public Spot(List<String> features,String location) {
+    public Spot(String dbID, List<String> features, String location) {
+        this.dbID = dbID;
         this.features = features;
         this.location = location;
     }
@@ -37,5 +38,13 @@ public class Spot {
 
     public void addFeature(String feature) {
         this.features.add(feature);
+    }
+
+    public String getDbID() {
+        return dbID;
+    }
+
+    public void setDbID(String dbID) {
+        this.dbID = dbID;
     }
 }

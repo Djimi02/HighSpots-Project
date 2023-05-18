@@ -34,6 +34,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,8 +43,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.slider.Slider;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Location lastKnownLocation;
 
     /* Variables */
+    private List<Spot> allSpots = new ArrayList<>();
 
     /* Views */
     private DrawerLayout drawerLayout;
@@ -185,6 +189,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initVars() {
         this.spotDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
+        spotDataReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    return;
+                }
+
+                allSpots.clear();
+                for (DataSnapshot ds : task.getResult().getChildren()) {
+                    Spot spot = ds.getValue(Spot.class);
+
+                    allSpots.add(spot);
+                }
+                addSpotsOnMap();
+            }
+        });
     }
 
     private void initMenuViews() {
@@ -290,15 +310,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        Spot newSpot = new Spot(newSpotFeatures, location);
-        spotDataReference.setValue(newSpot).addOnSuccessListener(new OnSuccessListener<Void>() {
+        String newSpotID = spotDataReference.push().getKey();
+        Spot newSpot = new Spot(newSpotID, newSpotFeatures, location);
+        spotDataReference.child(newSpotID).setValue(newSpot).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Toast.makeText(MapsActivity.this, "The spot has been saved!", Toast.LENGTH_SHORT).show();
                 Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                allSpots.add(newSpot);
+                addSpotsOnMap();
             }
         });
+    }
+
+    private void addSpotsOnMap() {
+        for (Spot spot : allSpots) {
+            String[] latLng = spot.getLocation().split(",");
+            double lat = Double.parseDouble(latLng[0]);
+            double lng = Double.parseDouble(latLng[1]);
+
+            Marker pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+        }
     }
 
     private void updateLocationUI() {
