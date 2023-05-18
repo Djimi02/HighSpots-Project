@@ -23,8 +23,10 @@ import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.highspots.enums.Feature;
+import com.example.highspots.models.Spot;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,10 +37,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.slider.Slider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +82,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<CheckBox> addSpotDialogFeatureCheckBoxes = new ArrayList<>();
     private Button addSpotDialogSaveBTN;
     private Spinner addSpotDialogLocOptionsSpinner;
+
+    /* Database */
+    private DatabaseReference spotDataReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         getDeviceLocation();
 
         initViews();
+        initVars();
     }
 
     private void initViews() {
@@ -172,6 +181,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         initMenuViews();
+    }
+
+    private void initVars() {
+        this.spotDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
     }
 
     private void initMenuViews() {
@@ -244,7 +257,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addSpotDialogSaveBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                saveSpot();
             }
         });
 
@@ -252,15 +265,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.location_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addSpotDialogLocOptionsSpinner.setAdapter(adapter);
-        addSpotDialogLocOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("position : " + position);
+    }
+
+    private void saveSpot() {
+        String location;
+        if (addSpotDialogLocOptionsSpinner.getSelectedItemPosition() == 0) { // Get current location
+            location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
+        } else if (addSpotDialogLocOptionsSpinner.getSelectedItemPosition() == 1) { // Get location from map
+            Toast.makeText(this, "This location option is not yet implemented!", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            return;
+        }
+
+        List<String> newSpotFeatures = new ArrayList<>();
+        for (CheckBox checkBox : addSpotDialogFeatureCheckBoxes) {
+            if (checkBox.isChecked()) {
+                newSpotFeatures.add(checkBox.getText().toString());
             }
+        }
 
+        if (newSpotFeatures.size() < 2) {
+            Toast.makeText(this, "Choose at least 2 features!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Spot newSpot = new Spot(newSpotFeatures, location);
+        spotDataReference.setValue(newSpot).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onSuccess(Void unused) {
+                Toast.makeText(MapsActivity.this, "The spot has been saved!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
     }

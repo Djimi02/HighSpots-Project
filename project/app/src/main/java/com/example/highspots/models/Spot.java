@@ -8,33 +8,23 @@ import java.util.List;
 
 public class Spot {
 
-    private List<Feature> features = new ArrayList<>();
-    private List<Pot> pots = new ArrayList<>();
+    private List<String> features = new ArrayList<>();
 
     private String location;
 
     public Spot() { }
 
-    public Spot(List<Feature> features, List<Pot> pots, String location) {
+    public Spot(List<String> features,String location) {
         this.features = features;
-        this.pots = pots;
         this.location = location;
     }
 
-    public List<Feature> getFeatures() {
+    public List<String> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<Feature> features) {
+    public void setFeatures(List<String> features) {
         this.features = features;
-    }
-
-    public List<Pot> getPots() {
-        return pots;
-    }
-
-    public void setPots(List<Pot> pots) {
-        this.pots = pots;
     }
 
     public String getLocation() {
@@ -45,11 +35,7 @@ public class Spot {
         this.location = location;
     }
 
-    public void addPot(Pot pot) {
-        this.pots.add(pot);
-    }
-
-    public void addFeature(Feature feature) {
+    public void addFeature(String feature) {
         this.features.add(feature);
     }
 }
