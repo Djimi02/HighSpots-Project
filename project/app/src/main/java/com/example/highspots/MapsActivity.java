@@ -50,6 +50,7 @@ import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -59,7 +60,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityMapsBinding binding;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    Location lastKnownLocation;
+    private Location lastKnownLocation;
 
     /* Variables */
     private List<Spot> allSpots = new ArrayList<>();
@@ -202,7 +203,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     allSpots.add(spot);
                 }
-                addSpotsOnMap();
+                addSpotsOnMap(allSpots);
             }
         });
     }
@@ -243,9 +244,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         filterBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                filterSpots();
             }
         });
+    }
+
+    private void filterSpots() {
+        List<String> selectedFeatures = getSelectedFeatures();
+
+        List<Spot> filteredSpots;
+        filteredSpots = allSpots.stream()
+                .filter(spot -> spot.getFeatures().stream()
+                        .anyMatch(feature -> selectedFeatures.contains(feature))).collect(Collectors.toList());
+
+        addSpotsOnMap(filteredSpots);
+    }
+
+    private List<String> getSelectedFeatures() {
+        return menuFeatureCheckBoxes.stream()
+                .filter(checkBox -> checkBox.isChecked())
+                .map(checkBox -> checkBox.getText().toString())
+                .collect(Collectors.toList());
     }
 
     private void openAddSpotDialog() {
@@ -319,13 +338,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
                 allSpots.add(newSpot);
-                addSpotsOnMap();
+                addSpotsOnMap(allSpots);
             }
         });
     }
 
-    private void addSpotsOnMap() {
-        for (Spot spot : allSpots) {
+    private void addSpotsOnMap(List<Spot> spots) {
+        mMap.clear();
+        for (Spot spot : spots) {
             String[] latLng = spot.getLocation().split(",");
             double lat = Double.parseDouble(latLng[0]);
             double lng = Double.parseDouble(latLng[1]);
