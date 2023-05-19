@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/add_spot_dialog_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,7 +40,8 @@
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogSubTitleTV" />
+            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogSubTitleTV"
+            android:popupBackground="@color/bottom_nav_color"/>
 
         <GridLayout
             android:id="@+id/addSpotDialogGridLayout"
@@ -60,7 +62,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addSpotDialogGridLayout" />
+            app:layout_constraintTop_toBottomOf="@id/addSpotDialogGridLayout"
+            android:backgroundTint="@color/dark_button_color"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

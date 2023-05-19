@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/maps_menu_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,7 +45,9 @@
             app:layout_constraintTop_toBottomOf="@+id/mapsMenuChooseDistanceTV"
             android:valueFrom="3.0"
             android:valueTo="30.0"
-            android:stepSize="3"/>
+            android:stepSize="3"
+            app:trackColor="@color/dark_button_color"
+            app:thumbColor="@color/dark_button_color"/>
 
         <GridLayout
             android:id="@+id/mapMenuGridLayout"
@@ -61,7 +64,8 @@
             android:text="Filter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mapsMenuSlider" />
+            app:layout_constraintTop_toBottomOf="@+id/mapsMenuSlider"
+            android:backgroundTint="@color/dark_button_color"/>
 
         <TextView
             android:id="@+id/textView4"
