@@ -42,9 +42,10 @@ public class FeatureRVAdapter extends RecyclerView.Adapter<FeatureRVAdapter.View
         System.out.println("Position: " + position);
 
         switch (features.get(position)) {
-            case "":
-                break;
+//            case "":
+//                break;
             default:
+                holder.featureIcon.setImageResource(R.drawable.icon_sunset);
                 break;
         }
     }
