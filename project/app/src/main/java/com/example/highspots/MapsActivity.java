@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.highspots.adapters.FeatureRVAdapter;
 import com.example.highspots.enums.Feature;
 import com.example.highspots.models.Spot;
+import com.example.highspots.repositories.UserDataRepository;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,6 +50,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +92,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<CheckBox> addSpotDialogFeatureCheckBoxes = new ArrayList<>();
     private Button addSpotDialogSaveBTN;
     private Spinner addSpotDialogLocOptionsSpinner;
+    private TextView addSpotRatingTV;
+    private Slider addSpotRatingSlider;
 
     /* Open Spot Dialog Views */
     private RecyclerView spotFeaturesRV;
@@ -351,6 +355,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.location_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         addSpotDialogLocOptionsSpinner.setAdapter(adapter);
+
+        // Configure slider and its label
+        this.addSpotRatingTV = popupView.findViewById(R.id.addSpotDialogRatingTV);
+        this.addSpotRatingSlider = popupView.findViewById(R.id.addSpotRatingSlider);
+        addSpotRatingTV.setText("Rating: " + addSpotRatingSlider.getValue());
+        addSpotRatingSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                addSpotRatingTV.setText("Rating: " + addSpotRatingSlider.getValue());
+            }
+        });
     }
 
     private void saveSpot() {
@@ -377,7 +397,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         String newSpotID = spotDataReference.push().getKey();
-        Spot newSpot = new Spot(newSpotID, newSpotFeatures, location);
+        double rating = (double) this.addSpotRatingSlider.getValue();
+        int numberOfRatings = 1;
+        String creatorID = UserDataRepository.getInstance().getUser().getDbID();
+        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, Arrays.asList(creatorID), creatorID);
         spotDataReference.child(newSpotID).setValue(newSpot).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
