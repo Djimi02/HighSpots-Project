@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/add_spot_dialog_background">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/openSpotDialogCV"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="20dp"
+        android:backgroundTint="@color/bottom_nav_color">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Spot Features"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:textStyle="bold"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/openSpotDialogRV"/>
+
+            </ScrollView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/openSpotDialogVisitBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/dark_button_color"
+        android:text="Visit"
+        app:layout_constraintStart_toStartOf="@+id/openSpotDialogCV"
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogCV" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/dark_button_color"
+        android:text="Rate Spot"
+        app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogCV"
+        android:id="@+id/openSpotDialogRateBTN"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

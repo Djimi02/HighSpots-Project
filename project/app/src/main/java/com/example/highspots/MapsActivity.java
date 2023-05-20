@@ -6,16 +6,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.highspots.adapters.FeatureRVAdapter;
 import com.example.highspots.enums.Feature;
 import com.example.highspots.models.Spot;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -46,10 +47,11 @@ import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -64,8 +66,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* Variables */
     private List<Spot> allSpots = new ArrayList<>();
+    private Map<Marker, Spot> markerSpotMap = new HashMap<>();
 
-    /* Views */
+    /* Maps Views */
     private DrawerLayout drawerLayout;
     private ImageButton menuBTN;
     private BottomNavigationView bottomNavigationView;
@@ -82,11 +85,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
 
-    /* Dialog Views */
+    /* Add Spot Dialog Views */
     private GridLayout addSpotDialogGridLayout;
     private List<CheckBox> addSpotDialogFeatureCheckBoxes = new ArrayList<>();
     private Button addSpotDialogSaveBTN;
     private Spinner addSpotDialogLocOptionsSpinner;
+
+    /* Open Spot Dialog Views */
+    private RecyclerView spotFeaturesRV;
+    private Button visitSpotBTN;
+    private Button rateSpotBTN;
 
     /* Database */
     private DatabaseReference spotDataReference;
@@ -122,11 +130,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                openSpotDialog(markerSpotMap.get(marker));
+
+                return false;
+            }
+        });
 
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
@@ -208,6 +220,41 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void openSpotDialog(Spot spot) {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.open_spot_dialog, null);
+
+        initOpenSpotDialogViews(popupView, spot);
+
+        // show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void initOpenSpotDialogViews(View popupView, Spot spot) {
+        this.visitSpotBTN = popupView.findViewById(R.id.openSpotDialogVisitBTN);
+        visitSpotBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        this.rateSpotBTN = popupView.findViewById(R.id.openSpotDialogRateBTN);
+        rateSpotBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        this.spotFeaturesRV = popupView.findViewById(R.id.openSpotDialogRV);
+        FeatureRVAdapter rvAdapter = new FeatureRVAdapter(spot.getFeatures());
+        spotFeaturesRV.setAdapter(rvAdapter);
+        spotFeaturesRV.setLayoutManager(new LinearLayoutManager(this));
+    }
+
     private void initMenuViews() {
         this.menuSlider = findViewById(R.id.mapsMenuSlider);
 
@@ -271,7 +318,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.add_spot_dialog, null);
 
-        initDialogViews(popupView);
+        initAddSpotDialogViews(popupView);
 
         // show dialog
         dialogBuilder.setView(popupView);
@@ -279,7 +326,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.show();
     }
 
-    private void initDialogViews(View popupView) {
+    private void initAddSpotDialogViews(View popupView) {
         this.addSpotDialogGridLayout = popupView.findViewById(R.id.addSpotDialogGridLayout);
         addSpotDialogGridLayout.setRowCount(Feature.values().length / 2 + 1);
         addSpotDialogGridLayout.setColumnCount(2);
@@ -351,6 +398,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = Double.parseDouble(latLng[1]);
 
             Marker pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+            markerSpotMap.put(pin, spot);
         }
     }
 
