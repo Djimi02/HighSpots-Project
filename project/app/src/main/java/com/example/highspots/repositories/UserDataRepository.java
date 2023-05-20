@@ -76,6 +76,10 @@ public class UserDataRepository {
         usersDataReference.child(this.userID).child("nickName").setValue(newNickName);
     }
 
+    public void updateUserInDB() {
+        usersDataReference.child(this.userID).setValue(this.user);
+    }
+
     public void addListener(UserDataListener listener) {
         this.listeners.add(listener);
     }
