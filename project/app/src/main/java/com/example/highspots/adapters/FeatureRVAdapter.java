@@ -39,6 +39,7 @@ public class FeatureRVAdapter extends RecyclerView.Adapter<FeatureRVAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.featureName.setText(features.get(position));
+        System.out.println("Position: " + position);
 
         switch (features.get(position)) {
             case "":
@@ -50,7 +51,7 @@ public class FeatureRVAdapter extends RecyclerView.Adapter<FeatureRVAdapter.View
 
     @Override
     public int getItemCount() {
-        return 0;
+        return features.size();
     }
 
     /**
