@@ -6,16 +6,38 @@
     android:layout_height="match_parent"
     android:background="@drawable/add_spot_dialog_background">
 
+    <TextView
+        android:id="@+id/openSpotDialogRatingTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Rating: "
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/openSpotDialogCV"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/openSpotDialogVisitorsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Visitors: "
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/openSpotDialogCV"
         android:layout_width="300dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="24dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/bottom_nav_color"
+        app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardCornerRadius="20dp"
-        android:backgroundTint="@color/bottom_nav_color">
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogRatingTV">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,10 +47,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="Spot Features"
                 android:textSize="20dp"
-                android:gravity="center"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -38,7 +60,7 @@
                     android:id="@+id/openSpotDialogRV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="10"/>
+                    android:layout_weight="10" />
 
             </ScrollView>
 

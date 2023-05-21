@@ -96,6 +96,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Slider addSpotRatingSlider;
 
     /* Open Spot Dialog Views */
+    private TextView spotRatingTV;
+    private TextView numberOfVisitorsTV;
     private RecyclerView spotFeaturesRV;
     private Button visitSpotBTN;
     private Button rateSpotBTN;
@@ -237,6 +239,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void initOpenSpotDialogViews(View popupView, Spot spot) {
+        this.spotRatingTV = popupView.findViewById(R.id.openSpotDialogRatingTV);
+        spotRatingTV.setText("Rating: " + spot.getRating());
+
+        this.numberOfVisitorsTV = popupView.findViewById(R.id.openSpotDialogVisitorsTV);
+        numberOfVisitorsTV.setText("Visitors: " + spot.getVisitors().size());
+
         this.visitSpotBTN = popupView.findViewById(R.id.openSpotDialogVisitBTN);
         visitSpotBTN.setOnClickListener(new View.OnClickListener() {
             @Override
