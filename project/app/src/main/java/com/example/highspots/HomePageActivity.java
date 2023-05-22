@@ -22,6 +22,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private TextView nickNameTV;
     private TextView emailTV;
     private BottomNavigationView bottomNavigationView;
+    private TextView numberOfVisitedSpotsTV;
+    private TextView numberOfDoneRatingsTV;
 
     /* Database */
     UserDataRepository repository;
@@ -40,6 +42,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.nickNameTV = findViewById(R.id.HomePageUserNickname);
         this.emailTV = findViewById(R.id.HomePageUserEmail);
         this.bottomNavigationView = findViewById(R.id.nav_view_home_page);
+        this.numberOfVisitedSpotsTV = findViewById(R.id.homePageVisitedSpotsTV);
+        this.numberOfDoneRatingsTV = findViewById(R.id.homePageRatingsTV);
 
         // Configure Bottom Nav View
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -75,6 +79,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     public void retrieveUserData() {
         this.nickNameTV.setText(repository.getUser().getNickName());
         this.emailTV.setText(repository.getUser().getEmail());
+        this.numberOfVisitedSpotsTV.setText("Visited spots: " + (repository.getUser().getVisitedSpots().size()
+                + repository.getUser().getFoundSpots().size()));
+        this.numberOfDoneRatingsTV.setText("Ratings: " + repository.getUser().getNumberOfDoneRatings());
     }
 
     @Override
