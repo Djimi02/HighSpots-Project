@@ -404,6 +404,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+        // Create and save in db the new spot
         String newSpotID = spotDataReference.push().getKey();
         double rating = (double) this.addSpotRatingSlider.getValue();
         int numberOfRatings = 1;
@@ -419,6 +420,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 addSpotsOnMap(allSpots);
             }
         });
+
+        // Update the current user with a new found spot
+        UserDataRepository.getInstance().getUser().addFoundSpot(newSpotID);
+        UserDataRepository.getInstance().updateUserInDB();
     }
 
     private void addSpotsOnMap(List<Spot> spots) {
