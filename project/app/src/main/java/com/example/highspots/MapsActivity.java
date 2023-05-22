@@ -404,6 +404,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+        if (this.addSpotRatingSlider.getValue() < 4.5) {
+            Toast.makeText(this, "What is the point in sharing a spot rated under 4.5 xD?", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Create and save in db the new spot
         String newSpotID = spotDataReference.push().getKey();
         double rating = (double) this.addSpotRatingSlider.getValue();
