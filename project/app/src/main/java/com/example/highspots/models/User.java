@@ -10,6 +10,7 @@ public class User {
     private String email;
     private List<String> foundSpots = new ArrayList<>();
     private List<String> visitedSpots = new ArrayList<>();
+    private int numberOfDoneRatings = 0;
 
     public User() { }
 
@@ -73,5 +74,17 @@ public class User {
 
     public void removeVisitedSpot(String visitedSpot) {
         this.visitedSpots.remove(visitedSpot);
+    }
+
+    public int getNumberOfDoneRatings() {
+        return numberOfDoneRatings;
+    }
+
+    public void setNumberOfDoneRatings(int numberOfDoneRatings) {
+        this.numberOfDoneRatings = numberOfDoneRatings;
+    }
+
+    public void incrementNumberOfDoneRatings() {
+        this.numberOfDoneRatings++;
     }
 }

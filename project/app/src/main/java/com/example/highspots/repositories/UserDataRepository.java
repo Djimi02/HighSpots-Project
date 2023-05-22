@@ -43,6 +43,7 @@ public class UserDataRepository {
                 if (user1 != null) {
                     user = user1;
                     System.out.println("Name = " + user.getNickName());
+                    System.out.println("Ratings = " + user.getNumberOfDoneRatings());
                     notifyListenersOnUserDataChanged();
                 }
             }

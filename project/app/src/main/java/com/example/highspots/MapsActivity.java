@@ -428,6 +428,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Update the current user with a new found spot
         UserDataRepository.getInstance().getUser().addFoundSpot(newSpotID);
+        UserDataRepository.getInstance().getUser().incrementNumberOfDoneRatings();
         UserDataRepository.getInstance().updateUserInDB();
     }
 
