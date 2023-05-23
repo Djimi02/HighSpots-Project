@@ -59,6 +59,7 @@ import java.util.stream.Collectors;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static int LOCATION_PERMISSION_CODE = 101;
+    private final double ALLOWED_USER_SPOT_DISTANCE = 100;
 
     /* Google Maps */
     private GoogleMap mMap;
@@ -278,6 +279,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             visitSpotBTN.setText("Visited");
         }
 
+        // Configure features recycler view adapter
         this.spotFeaturesRV = popupView.findViewById(R.id.openSpotDialogRV);
         FeatureRVAdapter rvAdapter = new FeatureRVAdapter(spot.getFeatures());
         spotFeaturesRV.setAdapter(rvAdapter);
@@ -289,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         float[] distanceResult = new float[3];
         Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
         System.out.println("DISTANCE = " + distanceResult[0]);
-        return distanceResult[0] <= 100;
+        return distanceResult[0] <= ALLOWED_USER_SPOT_DISTANCE;
     }
 
     private void initMenuViews() {
