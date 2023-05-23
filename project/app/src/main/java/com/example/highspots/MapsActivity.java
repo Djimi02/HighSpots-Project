@@ -102,6 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private RecyclerView spotFeaturesRV;
     private Button visitSpotBTN;
     private Button rateSpotBTN;
+    private Slider openSpotRatingSlider;
+    private Button rateSpotWithBTN;
 
     /* Database */
     private DatabaseReference spotDataReference;
@@ -262,7 +264,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rateSpotBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (rateSpotWithBTN.getVisibility() == View.GONE) {
+                    rateSpotWithBTN.setVisibility(View.VISIBLE);
+                    openSpotRatingSlider.setVisibility(View.VISIBLE);
+                    rateSpotBTN.setText("Close rating");
+                } else {
+                    rateSpotWithBTN.setVisibility(View.GONE);
+                    openSpotRatingSlider.setVisibility(View.GONE);
+                    rateSpotBTN.setText("Rate spot");
+                }
             }
         });
 
@@ -281,11 +291,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             visitSpotBTN.setText("Visited");
         }
 
+        // Disable the rate btn if the user has already rated the spot
+        if (UserDataRepository.getInstance().getUser().getRatedSpots().contains(spot.getDbID())) {
+            rateSpotBTN.setEnabled(false);
+            rateSpotBTN.setText("Rated");
+        }
+
         // Configure features recycler view adapter
         this.spotFeaturesRV = popupView.findViewById(R.id.openSpotDialogRV);
         FeatureRVAdapter rvAdapter = new FeatureRVAdapter(spot.getFeatures());
         spotFeaturesRV.setAdapter(rvAdapter);
         spotFeaturesRV.setLayoutManager(new LinearLayoutManager(this));
+
+        this.openSpotRatingSlider = popupView.findViewById(R.id.openSpotDialogRatingSlider);
+        openSpotRatingSlider.setValue(5);
+
+        this.rateSpotWithBTN = popupView.findViewById(R.id.openSpotDialogRateWithBTN);
+        rateSpotWithBTN.setText("Rate with " + openSpotRatingSlider.getValue());
+        rateSpotWithBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                double rating = openSpotRatingSlider.getValue();
+                UserDataRepository.getInstance().rateSpot(spot, rating);
+                dialog.dismiss();
+                Toast.makeText(MapsActivity.this, "Spot was rated successfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        openSpotRatingSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(@NonNull Slider slider) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(@NonNull Slider slider) {
+                rateSpotWithBTN.setText("Rate with " + slider.getValue());
+            }
+        });
     }
 
     private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
@@ -334,6 +377,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 filterSpots();
+                drawerLayout.close();
             }
         });
     }

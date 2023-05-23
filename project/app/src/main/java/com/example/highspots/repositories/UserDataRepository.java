@@ -85,10 +85,24 @@ public class UserDataRepository {
     }
 
     public void visitSpot(Spot spot) {
+        // Update user
         this.user.addVisitedSpot(spot.getDbID());
+        this.user.addRatedSpot(spot.getDbID());
         updateUserInDB();
+
+        // Update spot
         spot.addVisitor(this.user.getDbID());
         spotsDataReference.child(spot.getDbID()).setValue(spot);
+    }
+
+    public void rateSpot(Spot spot, double rating) {
+        // Update spot
+        spot.addNewRating(rating);
+        spotsDataReference.child(spot.getDbID()).setValue(spot);
+
+        // Update user
+        this.user.addRatedSpot(spot.getDbID());
+        updateUserInDB();
     }
 
     public void addListener(UserDataListener listener) {

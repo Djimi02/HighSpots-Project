@@ -88,4 +88,30 @@
         app:layout_constraintTop_toBottomOf="@+id/openSpotDialogCV"
         android:id="@+id/openSpotDialogRateBTN"/>
 
+    <com.google.android.material.slider.Slider
+        android:id="@+id/openSpotDialogRatingSlider"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:stepSize="0.5"
+        android:valueFrom="0"
+        android:valueTo="10"
+        app:layout_constraintEnd_toEndOf="@+id/openSpotDialogRateBTN"
+        app:layout_constraintStart_toStartOf="@+id/openSpotDialogVisitBTN"
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogVisitBTN"
+        android:visibility="gone"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/dark_button_color"
+        android:text="Rate with"
+        app:layout_constraintEnd_toEndOf="@+id/openSpotDialogRatingSlider"
+        app:layout_constraintStart_toStartOf="@+id/openSpotDialogRatingSlider"
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogRatingSlider"
+        android:id="@+id/openSpotDialogRateWithBTN"
+        android:visibility="gone"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
