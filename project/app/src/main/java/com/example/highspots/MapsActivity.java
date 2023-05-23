@@ -153,7 +153,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
-        initViews();
+        initViews(); // should be called before initVars()
         initVars();
     }
 
@@ -296,6 +296,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initMenuViews() {
         this.menuSlider = findViewById(R.id.mapsMenuSlider);
+        menuSlider.setValue(30);
 
         this.distanceTV = findViewById(R.id.mapsMenuChooseDistanceTV);
         distanceTV.setText("Choose distance: " + menuSlider.getValue() + " km");
