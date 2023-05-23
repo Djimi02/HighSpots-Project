@@ -10,6 +10,7 @@ public class User {
     private String email;
     private List<String> foundSpots = new ArrayList<>();
     private List<String> visitedSpots = new ArrayList<>();
+    private List<String> ratedSpots = new ArrayList<>();
     private int numberOfDoneRatings = 0;
 
     public User() { }
@@ -82,6 +83,18 @@ public class User {
 
     public void setNumberOfDoneRatings(int numberOfDoneRatings) {
         this.numberOfDoneRatings = numberOfDoneRatings;
+    }
+
+    public List<String> getRatedSpots() {
+        return ratedSpots;
+    }
+
+    public void setRatedSpots(List<String> ratedSpots) {
+        this.ratedSpots = ratedSpots;
+    }
+
+    public void addRatedSpot(String newlyRatedSpot) {
+        this.ratedSpots.add(newlyRatedSpot);
     }
 
     public void incrementNumberOfDoneRatings() {
