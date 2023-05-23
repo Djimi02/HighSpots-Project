@@ -249,7 +249,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         visitSpotBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                UserDataRepository.getInstance().visitSpot(spot);
+                Toast.makeText(MapsActivity.this, "Spot is now visited!", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
             }
         });
 
@@ -261,10 +263,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        // Disable the visit and rate btns if the user is far from the spot
+        if (!isUserCloseToSpot(spot)) {
+            rateSpotBTN.setEnabled(false);
+            visitSpotBTN.setEnabled(false);
+        }
+
+        // Disable the visit btn if the user has found or already visited the spot
+        if (spot.getCreatorID().equals(UserDataRepository.getInstance().getUser().getDbID())) {
+            visitSpotBTN.setEnabled(false);
+            visitSpotBTN.setText("Found");
+        } else if (UserDataRepository.getInstance().getUser().getVisitedSpots().contains(spot.getDbID())) {
+            visitSpotBTN.setEnabled(false);
+            visitSpotBTN.setText("Visited");
+        }
+
         this.spotFeaturesRV = popupView.findViewById(R.id.openSpotDialogRV);
         FeatureRVAdapter rvAdapter = new FeatureRVAdapter(spot.getFeatures());
         spotFeaturesRV.setAdapter(rvAdapter);
         spotFeaturesRV.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private boolean isUserCloseToSpot(Spot spot) {
+        double[] spotLocation = spotLocStringToDouble(spot);
+        float[] distanceResult = new float[3];
+        Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
+        System.out.println("DISTANCE = " + distanceResult[0]);
+        return distanceResult[0] <= 100;
     }
 
     private void initMenuViews() {
@@ -435,13 +460,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void addSpotsOnMap(List<Spot> spots) {
         mMap.clear();
         for (Spot spot : spots) {
-            String[] latLng = spot.getLocation().split(",");
-            double lat = Double.parseDouble(latLng[0]);
-            double lng = Double.parseDouble(latLng[1]);
+            double[] latLng = spotLocStringToDouble(spot);
+            double lat = latLng[0];
+            double lng = latLng[1];
 
             Marker pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
             markerSpotMap.put(pin, spot);
         }
+    }
+
+    /**
+     * Given Spot object converts the string location to array of doubles.
+     * @param spot
+     * @return - array of doubles where arr[0] = lat and arr[1] = lng
+     */
+    private double[] spotLocStringToDouble(Spot spot) {
+        String[] latLngSTR = spot.getLocation().split(",");
+        double[] latLng = new double[2];
+        latLng[0] = Double.parseDouble(latLngSTR[0]);
+        latLng[1] = Double.parseDouble(latLngSTR[1]);
+        return latLng;
     }
 
     private void updateLocationUI() {

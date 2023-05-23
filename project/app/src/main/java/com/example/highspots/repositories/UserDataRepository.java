@@ -3,6 +3,7 @@ package com.example.highspots.repositories;
 import androidx.annotation.NonNull;
 
 import com.example.highspots.interfaces.UserDataListener;
+import com.example.highspots.models.Spot;
 import com.example.highspots.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -26,10 +27,12 @@ public class UserDataRepository {
     private User user;
 
     private DatabaseReference usersDataReference;
+    private DatabaseReference spotsDataReference;
 
     private List<UserDataListener> listeners;
 
     private UserDataRepository() {
+        this.spotsDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
         this.usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
         this.listeners = new ArrayList<>();
 
@@ -79,6 +82,13 @@ public class UserDataRepository {
 
     public void updateUserInDB() {
         usersDataReference.child(this.userID).setValue(this.user);
+    }
+
+    public void visitSpot(Spot spot) {
+        this.user.addVisitedSpot(spot.getDbID());
+        updateUserInDB();
+        spot.addVisitor(this.user.getDbID());
+        spotsDataReference.child(spot.getDbID()).setValue(spot);
     }
 
     public void addListener(UserDataListener listener) {

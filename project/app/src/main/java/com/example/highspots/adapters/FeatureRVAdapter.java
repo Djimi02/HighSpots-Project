@@ -21,7 +21,6 @@ public class FeatureRVAdapter extends RecyclerView.Adapter<FeatureRVAdapter.View
 
     public FeatureRVAdapter(List<String> features) {
         this.features = features;
-        System.out.println("Feature list size: " + features.size());
     }
 
     @NonNull
@@ -39,7 +38,6 @@ public class FeatureRVAdapter extends RecyclerView.Adapter<FeatureRVAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.featureName.setText(features.get(position));
-        System.out.println("Position: " + position);
 
         switch (features.get(position)) {
 //            case "":
