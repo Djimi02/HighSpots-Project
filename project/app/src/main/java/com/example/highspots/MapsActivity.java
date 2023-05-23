@@ -220,7 +220,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (DataSnapshot ds : task.getResult().getChildren()) {
                     Spot spot = ds.getValue(Spot.class);
 
-                    allSpots.add(spot);
+//                    if (isUserCloseToSpot(spot, menuSlider.getValue() * 1000)) {
+                        allSpots.add(spot); // uncomment the if-statement later
+//                    }
                 }
                 addSpotsOnMap(allSpots);
             }
@@ -265,7 +267,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         // Disable the visit and rate btns if the user is far from the spot
-        if (!isUserCloseToSpot(spot)) {
+        if (!isUserCloseToSpot(spot, ALLOWED_USER_SPOT_DISTANCE)) {
             rateSpotBTN.setEnabled(false);
             visitSpotBTN.setEnabled(false);
         }
@@ -286,12 +288,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         spotFeaturesRV.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    private boolean isUserCloseToSpot(Spot spot) {
+    private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
         double[] spotLocation = spotLocStringToDouble(spot);
         float[] distanceResult = new float[3];
         Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
         System.out.println("DISTANCE = " + distanceResult[0]);
-        return distanceResult[0] <= ALLOWED_USER_SPOT_DISTANCE;
+        return distanceResult[0] <= maxDistance;
     }
 
     private void initMenuViews() {
@@ -341,7 +343,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Spot> filteredSpots;
         filteredSpots = allSpots.stream()
-                .filter(spot -> spot.getFeatures().stream()
+                .filter(spot -> isUserCloseToSpot(spot, menuSlider.getValue() * 1000) && spot.getFeatures().stream()
                         .anyMatch(feature -> selectedFeatures.contains(feature))).collect(Collectors.toList());
 
         addSpotsOnMap(filteredSpots);
