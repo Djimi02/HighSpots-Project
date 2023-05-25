@@ -84,24 +84,47 @@ public class UserDataRepository {
         usersDataReference.child(this.userID).setValue(this.user);
     }
 
+    public void updateSpotInDB(Spot spot) {
+        spotsDataReference.child(spot.getDbID()).setValue(spot);
+    }
+
+    public Spot addNewSpot(List<String> newSpotFeatures, double rating, String location ) {
+        // Create new spot
+        String newSpotID = spotsDataReference.push().getKey();
+        int numberOfRatings = 1;
+        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, new ArrayList<String>(), this.userID);
+        newSpot.addVisitor(this.user.getDbID());
+
+        // Update user
+        this.user.addFoundSpot(newSpot.getDbID());
+        this.user.addRatedSpot(newSpot.getDbID());
+        this.user.incrementNumberOfDoneRatings();
+        updateUserInDB();
+
+        // Save spot
+        updateSpotInDB(newSpot);
+
+        return newSpot;
+    }
+
     public void visitSpot(Spot spot) {
         // Update user
         this.user.addVisitedSpot(spot.getDbID());
-        this.user.addRatedSpot(spot.getDbID());
         updateUserInDB();
 
         // Update spot
         spot.addVisitor(this.user.getDbID());
-        spotsDataReference.child(spot.getDbID()).setValue(spot);
+        updateSpotInDB(spot);
     }
 
     public void rateSpot(Spot spot, double rating) {
         // Update spot
         spot.addNewRating(rating);
-        spotsDataReference.child(spot.getDbID()).setValue(spot);
+        updateSpotInDB(spot);
 
         // Update user
         this.user.addRatedSpot(spot.getDbID());
+        this.user.incrementNumberOfDoneRatings();
         updateUserInDB();
     }
 

@@ -466,6 +466,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+        // Collect the selected features
         List<String> newSpotFeatures = new ArrayList<>();
         for (CheckBox checkBox : addSpotDialogFeatureCheckBoxes) {
             if (checkBox.isChecked()) {
@@ -484,26 +485,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Create and save in db the new spot
-        String newSpotID = spotDataReference.push().getKey();
-        double rating = (double) this.addSpotRatingSlider.getValue();
-        int numberOfRatings = 1;
-        String creatorID = UserDataRepository.getInstance().getUser().getDbID();
-        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, Arrays.asList(creatorID), creatorID);
-        spotDataReference.child(newSpotID).setValue(newSpot).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Toast.makeText(MapsActivity.this, "The spot has been saved!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-                allSpots.add(newSpot);
-                addSpotsOnMap(allSpots);
-            }
-        });
+        Spot newSpot = UserDataRepository.getInstance()
+                .addNewSpot(newSpotFeatures, (double) this.addSpotRatingSlider.getValue(), location);
 
-        // Update the current user with a new found spot
-        UserDataRepository.getInstance().getUser().addFoundSpot(newSpotID);
-        UserDataRepository.getInstance().getUser().incrementNumberOfDoneRatings();
-        UserDataRepository.getInstance().updateUserInDB();
+        // Update the list with all spots with the new one and refresh the spots on the map
+        allSpots.add(newSpot);
+        addSpotsOnMap(allSpots);
+
+        // Closing dialog procedures
+        Toast.makeText(MapsActivity.this, "The spot has been saved!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
+        dialog.dismiss();
+
     }
 
     private void addSpotsOnMap(List<Spot> spots) {
