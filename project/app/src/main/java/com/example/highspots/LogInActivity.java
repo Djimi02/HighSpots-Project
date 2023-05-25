@@ -18,12 +18,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.highspots.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -36,6 +42,9 @@ public class LogInActivity extends AppCompatActivity {
     /* Vars */
     private long lastClickTime = 0;
 
+    /* Database */
+    private DatabaseReference usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +52,34 @@ public class LogInActivity extends AppCompatActivity {
         this.getSupportActionBar().hide();
 
         autoLogIn();
-
-        initViews();
     }
 
     private void autoLogIn() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
+            initViews();
             return;
         }
-        Toast.makeText(LogInActivity.this, "Login was successful!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
-        finish();
+
+        usersDataReference.child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    return;
+                }
+
+                User user = task.getResult().getValue(User.class);
+
+                if (user != null) {
+                    Toast.makeText(LogInActivity.this, "Login was successful!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
+                    finish();
+                } else {
+                    initViews();
+                }
+            }
+        });
+
     }
 
     private void initViews() {
