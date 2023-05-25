@@ -32,6 +32,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.IOException;
+
 public class LogInActivity extends AppCompatActivity {
 
     /* Views */
@@ -58,7 +60,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void autoLogIn() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
+        if (user == null || !isNetworkAvailable()) {
             initViews();
             return;
         }
@@ -67,6 +69,7 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if (!task.isSuccessful()) {
+                    initViews();
                     return;
                 }
 
@@ -82,6 +85,18 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public boolean isNetworkAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void initViews() {
