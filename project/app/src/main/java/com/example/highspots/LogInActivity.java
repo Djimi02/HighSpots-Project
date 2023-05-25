@@ -15,6 +15,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class LogInActivity extends AppCompatActivity {
     private EditText passwordET;
     private Button logInBTN;
     private TextView goToRegisterBTN;
+    private ProgressBar progressBar;
 
     /* Vars */
     private long lastClickTime = 0;
@@ -107,6 +109,9 @@ public class LogInActivity extends AppCompatActivity {
                 startActivity(new Intent(LogInActivity.this, RegistrationActivity.class));
             }
         });
+
+        this.progressBar = findViewById(R.id.logInPagePB);
+        progressBar.setVisibility(View.GONE);
     }
 
     private boolean isDataValid() {
