@@ -11,11 +11,12 @@ public class Spot {
     private double rating;
     private int numberOfRatings;
     private List<String> visitors;
+    private String imageName;
     private String creatorID;
 
     public Spot() { }
 
-    public Spot(List<String> features, String location, String dbID, double rating, int numberOfRatings, List<String> visitors, String creatorID) {
+    public Spot(List<String> features, String location, String dbID, double rating, int numberOfRatings, List<String> visitors, String creatorID, String imageName) {
         this.features = features;
         this.location = location;
         this.dbID = dbID;
@@ -23,6 +24,7 @@ public class Spot {
         this.numberOfRatings = numberOfRatings;
         this.visitors = visitors;
         this.creatorID = creatorID;
+        this.imageName = imageName;
     }
 
     public List<String> getFeatures() {
@@ -87,6 +89,14 @@ public class Spot {
 
     public void setCreatorID(String creatorID) {
         this.creatorID = creatorID;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public void addNewRating(double rating) {

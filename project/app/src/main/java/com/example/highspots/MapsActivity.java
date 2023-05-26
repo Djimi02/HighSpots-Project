@@ -14,6 +14,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -53,7 +55,10 @@ import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -544,9 +549,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
+        if (this.addSpotIV.getDrawable() == null) {
+            Toast.makeText(this, "Upload a image of the spot!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         // Create and save in db the new spot
         Spot newSpot = UserDataRepository.getInstance()
-                .addNewSpot(newSpotFeatures, (double) this.addSpotRatingSlider.getValue(), location);
+                .addNewSpot(newSpotFeatures, (double) this.addSpotRatingSlider.getValue(), location, this.addSpotIV);
 
         // Update the list with all spots with the new one and refresh the spots on the map
         allSpots.add(newSpot);

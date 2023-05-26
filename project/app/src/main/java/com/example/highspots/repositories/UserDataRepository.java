@@ -1,23 +1,27 @@
 package com.example.highspots.repositories;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 
 import com.example.highspots.interfaces.UserDataListener;
 import com.example.highspots.models.Spot;
 import com.example.highspots.models.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserDataRepository {
 
@@ -28,10 +32,12 @@ public class UserDataRepository {
 
     private DatabaseReference usersDataReference;
     private DatabaseReference spotsDataReference;
+    private StorageReference imageStorageReference;
 
     private List<UserDataListener> listeners;
 
     private UserDataRepository() {
+        this.imageStorageReference = FirebaseStorage.getInstance().getReference().child("Images");
         this.spotsDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
         this.usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
         this.listeners = new ArrayList<>();
@@ -88,11 +94,23 @@ public class UserDataRepository {
         spotsDataReference.child(spot.getDbID()).setValue(spot);
     }
 
-    public Spot addNewSpot(List<String> newSpotFeatures, double rating, String location ) {
+    public Spot addNewSpot(List<String> newSpotFeatures, double rating, String location, ImageView imageView) {
+
+        // Extracting the image from the image view and uploading it to db
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] dataToUpload = baos.toByteArray();
+
+        String imageName = UUID.randomUUID().toString();
+
+        imageStorageReference.child(imageName).putBytes(dataToUpload);
+
         // Create new spot
         String newSpotID = spotsDataReference.push().getKey();
         int numberOfRatings = 1;
-        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, new ArrayList<String>(), this.userID);
+        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, new ArrayList<String>(), this.userID, imageName);
         newSpot.addVisitor(this.user.getDbID());
 
         // Update user
