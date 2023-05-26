@@ -11,7 +11,6 @@ public class User {
     private List<String> foundSpots = new ArrayList<>();
     private List<String> visitedSpots = new ArrayList<>();
     private List<String> ratedSpots = new ArrayList<>();
-    private int numberOfDoneRatings = 0;
 
     public User() { }
 
@@ -77,14 +76,6 @@ public class User {
         this.visitedSpots.remove(visitedSpot);
     }
 
-    public int getNumberOfDoneRatings() {
-        return numberOfDoneRatings;
-    }
-
-    public void setNumberOfDoneRatings(int numberOfDoneRatings) {
-        this.numberOfDoneRatings = numberOfDoneRatings;
-    }
-
     public List<String> getRatedSpots() {
         return ratedSpots;
     }
@@ -97,7 +88,4 @@ public class User {
         this.ratedSpots.add(newlyRatedSpot);
     }
 
-    public void incrementNumberOfDoneRatings() {
-        this.numberOfDoneRatings++;
-    }
 }

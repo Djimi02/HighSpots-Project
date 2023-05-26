@@ -81,7 +81,7 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.emailTV.setText(repository.getUser().getEmail());
         this.numberOfVisitedSpotsTV.setText("Visited spots: " + (repository.getUser().getVisitedSpots().size()
                 + repository.getUser().getFoundSpots().size()));
-        this.numberOfDoneRatingsTV.setText("Ratings: " + repository.getUser().getNumberOfDoneRatings());
+        this.numberOfDoneRatingsTV.setText("Ratings: " + repository.getUser().getRatedSpots().size());
     }
 
     @Override

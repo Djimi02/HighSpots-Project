@@ -51,8 +51,6 @@ public class UserDataRepository {
 
                 if (user1 != null) {
                     user = user1;
-                    System.out.println("Name = " + user.getNickName());
-                    System.out.println("Ratings = " + user.getNumberOfDoneRatings());
                     notifyListenersOnUserDataChanged();
                 }
             }
@@ -116,7 +114,6 @@ public class UserDataRepository {
         // Update user
         this.user.addFoundSpot(newSpot.getDbID());
         this.user.addRatedSpot(newSpot.getDbID());
-        this.user.incrementNumberOfDoneRatings();
         updateUserInDB();
 
         // Save spot
@@ -142,7 +139,6 @@ public class UserDataRepository {
 
         // Update user
         this.user.addRatedSpot(spot.getDbID());
-        this.user.incrementNumberOfDoneRatings();
         updateUserInDB();
     }
 
