@@ -1,6 +1,7 @@
 package com.example.highspots;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,6 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,12 +59,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static int LOCATION_PERMISSION_CODE = 101;
     private final double ALLOWED_USER_SPOT_DISTANCE = 100;
+    private final int CAMERA_PERMISSION_CODE = 100;
 
     /* Google Maps */
     private GoogleMap mMap;
@@ -95,6 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Spinner addSpotDialogLocOptionsSpinner;
     private TextView addSpotRatingTV;
     private Slider addSpotRatingSlider;
+    private ImageView addSpotIV;
+    private Button addSpotAddImageBTN;
 
     /* Open Spot Dialog Views */
     private TextView spotRatingTV;
@@ -453,6 +462,57 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 addSpotRatingTV.setText("Rating: " + addSpotRatingSlider.getValue());
             }
         });
+
+        this.addSpotIV = popupView.findViewById(R.id.addSpotIV);
+
+        this.addSpotAddImageBTN = popupView.findViewById(R.id.addSpotAddImageBTN);
+        addSpotAddImageBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    System.out.println("PERMISSION NOT GRANTED");
+                    ActivityCompat.requestPermissions(MapsActivity.this,
+                            new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+                } else {
+                    openCamera();
+                    System.out.println("PERMISSION GRANTED");
+                }
+            }
+        });
+    }
+
+    public void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, CAMERA_PERMISSION_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_PERMISSION_CODE) { // In case of canceled camera.
+            if (data.getExtras() == null) {
+                Toast.makeText(this, "No image uploaded!", Toast.LENGTH_SHORT).show();
+            } else {
+                this.addSpotIV.setImageBitmap((Bitmap) data.getExtras().get("data"));
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case CAMERA_PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                } else {
+                    Toast.makeText(this, "Need camera permission!", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 
     private void saveSpot() {
