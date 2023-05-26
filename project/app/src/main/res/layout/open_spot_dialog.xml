@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/add_spot_dialog_background">
 
+    <ImageView
+        android:id="@+id/openSpotDialogIV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/openSpotDialogRatingTV"
         android:layout_width="wrap_content"
@@ -15,7 +26,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/openSpotDialogCV"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIV" />
 
     <TextView
         android:id="@+id/openSpotDialogVisitorsTV"
@@ -26,7 +37,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIV" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/openSpotDialogCV"

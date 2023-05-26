@@ -14,6 +14,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
@@ -72,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static int LOCATION_PERMISSION_CODE = 101;
     private final double ALLOWED_USER_SPOT_DISTANCE = 100;
     private final int CAMERA_PERMISSION_CODE = 100;
+    private final long MAX_IMAGE_SIZE_TO_DOWNLOAD = 1024 * 1024;
 
     /* Google Maps */
     private GoogleMap mMap;
@@ -111,6 +114,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button addSpotAddImageBTN;
 
     /* Open Spot Dialog Views */
+    private ImageView openSpotIV;
     private TextView spotRatingTV;
     private TextView numberOfVisitorsTV;
     private RecyclerView spotFeaturesRV;
@@ -121,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* Database */
     private DatabaseReference spotDataReference;
+    private StorageReference imageStorageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,6 +229,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void initVars() {
+        this.imageStorageReference = FirebaseStorage.getInstance().getReference().child("Images");
         this.spotDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
         spotDataReference.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -341,6 +347,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onStopTrackingTouch(@NonNull Slider slider) {
                 rateSpotWithBTN.setText("Rate with " + slider.getValue());
+            }
+        });
+
+        // Downloading the image from the db
+        this.openSpotIV = popupView.findViewById(R.id.openSpotDialogIV);
+        imageStorageReference.child(spot.getImageName()).getBytes(MAX_IMAGE_SIZE_TO_DOWNLOAD)
+                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            @Override
+            public void onSuccess(byte[] bytes) {
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                openSpotIV.setImageBitmap(bitmap);
             }
         });
     }
