@@ -498,12 +498,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.CAMERA)
                         != PackageManager.PERMISSION_GRANTED) {
-                    System.out.println("PERMISSION NOT GRANTED");
                     ActivityCompat.requestPermissions(MapsActivity.this,
                             new String[] {Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
                 } else {
                     openCamera();
-                    System.out.println("PERMISSION GRANTED");
                 }
             }
         });
@@ -600,7 +598,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double[] spotLocation = spotLocStringToDouble(spot);
         float[] distanceResult = new float[3];
         Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
-        System.out.println("DISTANCE = " + distanceResult[0]);
         return distanceResult[0] <= maxDistance;
     }
 
