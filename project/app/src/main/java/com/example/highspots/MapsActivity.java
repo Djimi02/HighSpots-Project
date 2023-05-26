@@ -251,6 +251,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+
+    /* ========================== <START> Open Spot Dialog Block ========================== */
+
     private void openSpotDialog(Spot spot) {
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.open_spot_dialog, null);
@@ -362,13 +365,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
-        double[] spotLocation = spotLocStringToDouble(spot);
-        float[] distanceResult = new float[3];
-        Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
-        System.out.println("DISTANCE = " + distanceResult[0]);
-        return distanceResult[0] <= maxDistance;
-    }
+    /* ========================== <END> Open Spot Dialog Block ========================== */
+
+
+    /* ========================== <START> Maps Side Menu Block ========================== */
 
     private void initMenuViews() {
         this.menuSlider = findViewById(R.id.mapsMenuSlider);
@@ -430,6 +430,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .map(checkBox -> checkBox.getText().toString())
                 .collect(Collectors.toList());
     }
+
+    /* ========================== <END> Maps Side Menu Block ========================== */
+
+
+    /* ========================== <START> Add Spot Dialog Block ========================== */
 
     private void openAddSpotDialog() {
         dialogBuilder = new AlertDialog.Builder(this);
@@ -586,6 +591,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /* ========================== <END> Add Spot Dialog Block ========================== */
+
+
+    /* ========================== <START> Auxiliary Functions Block ========================== */
+
+    private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
+        double[] spotLocation = spotLocStringToDouble(spot);
+        float[] distanceResult = new float[3];
+        Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
+        System.out.println("DISTANCE = " + distanceResult[0]);
+        return distanceResult[0] <= maxDistance;
+    }
+
     private void addSpotsOnMap(List<Spot> spots) {
         mMap.clear();
         for (Spot spot : spots) {
@@ -599,7 +617,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Given Spot object converts the string location to array of doubles.
+     * Given Spot object, converts the string location to array of doubles.
      * @param spot
      * @return - array of doubles where arr[0] = lat and arr[1] = lng
      */
