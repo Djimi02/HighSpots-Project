@@ -27,6 +27,7 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private TextView numberOfDoneRatingsTV;
     private TextView numberOfFoundSpotsTV;
     private TextView averageRatingFoundSpotsTV;
+    private TextView numberOfVisitorsToMySpotTV;
 
     /* Database */
     UserDataRepository repository;
@@ -48,9 +49,11 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.numberOfVisitedSpotsTV = findViewById(R.id.homePageVisitedSpotsTV);
         this.numberOfDoneRatingsTV = findViewById(R.id.homePageRatingsTV);
         this.numberOfFoundSpotsTV = findViewById(R.id.homePageFoundSpotsTV);
-        this.numberOfFoundSpotsTV.setText("My Spots: 0");
+        numberOfFoundSpotsTV.setText("My Spots: No Spots");
         this.averageRatingFoundSpotsTV = findViewById(R.id.homePageFoundSpotsAvgRatingTV);
         averageRatingFoundSpotsTV.setText("Average Rating: No Spots");
+        this.numberOfVisitorsToMySpotTV = findViewById(R.id.homePageMySpotsVisitorsTV);
+        numberOfVisitorsToMySpotTV.setText("Visitors of My Spots: No Spots");
 
         // Configure Bottom Nav View
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -93,20 +96,28 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
 
     @Override
     public void retrieveFoundSpotsData() {
-        if (repository.getFoundSpots() != null) {
+        if (repository.getFoundSpots() != null && repository.getFoundSpots().size() > 0) {
             System.out.println("My Spots: " + repository.getFoundSpots().size());
             this.numberOfFoundSpotsTV.setText("My Spots: " + repository.getFoundSpots().size());
+        } else {
+            this.numberOfFoundSpotsTV.setText("My Spots: No Spots");
         }
 
         if (repository.getFoundSpots().size() > 0) {
             double ratingSum = 0;
+            long numberOfVisitors = 0;
             for (Spot spot : repository.getFoundSpots()) {
                 ratingSum += spot.getRating();
+
+                numberOfVisitors += (spot.getVisitors().size() - 1);
             }
             double avgRating = ratingSum / repository.getFoundSpots().size();
+
             this.averageRatingFoundSpotsTV.setText("Average Rating: " + String.format("%.2f", avgRating));
+            numberOfVisitorsToMySpotTV.setText("Visitors of My Spots: " + numberOfVisitors);
         } else {
             this.averageRatingFoundSpotsTV.setText("Average Rating: No Spots");
+            numberOfVisitorsToMySpotTV.setText("Visitors of My Spots: No Spots");
         }
 
     }
