@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.highspots.interfaces.UserDataListener;
 import com.example.highspots.models.Spot;
 import com.example.highspots.models.User;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,7 +30,7 @@ public class UserDataRepository {
 
     private String userID;
     private User user;
-
+    private List<Spot> foundSpots;
     private DatabaseReference usersDataReference;
     private DatabaseReference spotsDataReference;
     private StorageReference imageStorageReference;
@@ -41,6 +42,7 @@ public class UserDataRepository {
         this.spotsDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
         this.usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
         this.listeners = new ArrayList<>();
+        this.foundSpots = new ArrayList<>();
 
         this.userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -53,6 +55,33 @@ public class UserDataRepository {
                     user = user1;
                     notifyListenersOnUserDataChanged();
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        usersDataReference.child(userID).child("foundSpots").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    String spotID = ds.getValue(String.class);
+                    spotsDataReference.child(spotID).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                        @Override
+                        public void onSuccess(DataSnapshot dataSnapshot) {
+                            Spot spot = dataSnapshot.getValue(Spot.class);
+                            if (spot != null) {
+                                System.out.println(spot.getDbID());
+                                foundSpots.add(spot);
+                                notifyListenersOnFoundSpotsDataChanged();
+                            }
+                        }
+                    });
+                }
+
             }
 
             @Override
@@ -77,6 +106,12 @@ public class UserDataRepository {
     private void notifyListenersOnUserDataChanged() {
         for (UserDataListener listener : this.listeners) {
             listener.retrieveUserData();
+        }
+    }
+
+    private void notifyListenersOnFoundSpotsDataChanged() {
+        for (UserDataListener listener : this.listeners) {
+            listener.retrieveFoundSpotsData();
         }
     }
 
@@ -152,5 +187,9 @@ public class UserDataRepository {
 
     public User getUser() {
         return this.user;
+    }
+
+    public List<Spot> getFoundSpots() {
+        return foundSpots;
     }
 }

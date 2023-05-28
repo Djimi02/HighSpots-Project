@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.highspots.interfaces.UserDataListener;
+import com.example.highspots.models.Spot;
 import com.example.highspots.repositories.UserDataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -24,6 +25,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private BottomNavigationView bottomNavigationView;
     private TextView numberOfVisitedSpotsTV;
     private TextView numberOfDoneRatingsTV;
+    private TextView numberOfFoundSpotsTV;
+    private TextView averageRatingFoundSpotsTV;
 
     /* Database */
     UserDataRepository repository;
@@ -44,6 +47,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.bottomNavigationView = findViewById(R.id.nav_view_home_page);
         this.numberOfVisitedSpotsTV = findViewById(R.id.homePageVisitedSpotsTV);
         this.numberOfDoneRatingsTV = findViewById(R.id.homePageRatingsTV);
+        this.numberOfFoundSpotsTV = findViewById(R.id.homePageFoundSpotsTV);
+        this.averageRatingFoundSpotsTV = findViewById(R.id.homePageFoundSpotsAvgRatingTV);
 
         // Configure Bottom Nav View
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -82,6 +87,18 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.numberOfVisitedSpotsTV.setText("Visited spots: " + (repository.getUser().getVisitedSpots().size()
                 + repository.getUser().getFoundSpots().size()));
         this.numberOfDoneRatingsTV.setText("Ratings: " + repository.getUser().getRatedSpots().size());
+    }
+
+    @Override
+    public void retrieveFoundSpotsData() {
+        this.numberOfFoundSpotsTV.setText("Found Spots: " + repository.getFoundSpots().size());
+
+        double ratingSum = 0;
+        for (Spot spot : repository.getFoundSpots()) {
+            ratingSum += spot.getRating();
+        }
+        double avgRating = ratingSum / repository.getFoundSpots().size();
+        this.averageRatingFoundSpotsTV.setText("Average Rating: " + String.format("%.2f", avgRating));
     }
 
     @Override
