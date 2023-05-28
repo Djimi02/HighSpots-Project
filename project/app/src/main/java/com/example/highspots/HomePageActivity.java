@@ -48,7 +48,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.numberOfVisitedSpotsTV = findViewById(R.id.homePageVisitedSpotsTV);
         this.numberOfDoneRatingsTV = findViewById(R.id.homePageRatingsTV);
         this.numberOfFoundSpotsTV = findViewById(R.id.homePageFoundSpotsTV);
+        this.numberOfFoundSpotsTV.setText("My Spots: 0");
         this.averageRatingFoundSpotsTV = findViewById(R.id.homePageFoundSpotsAvgRatingTV);
+        averageRatingFoundSpotsTV.setText("Average Rating: No Spots");
 
         // Configure Bottom Nav View
         bottomNavigationView.setSelectedItemId(R.id.navigation_home);
@@ -91,14 +93,22 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
 
     @Override
     public void retrieveFoundSpotsData() {
-        this.numberOfFoundSpotsTV.setText("Found Spots: " + repository.getFoundSpots().size());
-
-        double ratingSum = 0;
-        for (Spot spot : repository.getFoundSpots()) {
-            ratingSum += spot.getRating();
+        if (repository.getFoundSpots() != null) {
+            System.out.println("My Spots: " + repository.getFoundSpots().size());
+            this.numberOfFoundSpotsTV.setText("My Spots: " + repository.getFoundSpots().size());
         }
-        double avgRating = ratingSum / repository.getFoundSpots().size();
-        this.averageRatingFoundSpotsTV.setText("Average Rating: " + String.format("%.2f", avgRating));
+
+        if (repository.getFoundSpots().size() > 0) {
+            double ratingSum = 0;
+            for (Spot spot : repository.getFoundSpots()) {
+                ratingSum += spot.getRating();
+            }
+            double avgRating = ratingSum / repository.getFoundSpots().size();
+            this.averageRatingFoundSpotsTV.setText("Average Rating: " + String.format("%.2f", avgRating));
+        } else {
+            this.averageRatingFoundSpotsTV.setText("Average Rating: No Spots");
+        }
+
     }
 
     @Override
