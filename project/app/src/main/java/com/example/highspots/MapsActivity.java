@@ -668,8 +668,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), 15f));
+                            } else {
+                                Toast.makeText(MapsActivity.this, "No location found!", Toast.LENGTH_LONG).show();
                             }
                         } else {
+                            Toast.makeText(MapsActivity.this, "No location found!", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
