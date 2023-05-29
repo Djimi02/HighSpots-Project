@@ -167,9 +167,25 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
+    <Button
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view_home_page"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView3"
+        android:backgroundTint="@color/dark_button_color"
+        android:text="Update My Data"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:id="@+id/homePageUpdateMyDataBTN"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView3"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
@@ -185,27 +201,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="4dp"
-            android:paddingBottom="10dp"
             android:paddingLeft="14dp"
-            android:paddingRight="14dp">
+            android:paddingTop="4dp"
+            android:paddingRight="14dp"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Found spots:"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_gravity="center"/>
+                android:textStyle="bold" />
 
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/homePageFoundSpotsRV"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/homePageFoundSpotsRV"/>
+                    android:layout_height="match_parent" />
 
             </ScrollView>
 

@@ -36,6 +36,7 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private TextView averageRatingFoundSpotsTV;
     private TextView numberOfVisitorsToMySpotTV;
     private RecyclerView foundSpotsRV;
+    private Button updateMyDataBTN;
 
     /* Variables */
     List<Spot> foundSpots;
@@ -95,6 +96,16 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         this.foundSpotsAdapter = new FoundSpotsRVAdapter(this.foundSpots, this);
         foundSpotsRV.setAdapter(foundSpotsAdapter);
         foundSpotsRV.setLayoutManager(new LinearLayoutManager(this));
+
+        this.updateMyDataBTN = findViewById(R.id.homePageUpdateMyDataBTN);
+        updateMyDataBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retrieveUserData();
+                retrieveFoundSpotsData();
+                Toast.makeText(HomePageActivity.this, "Data updated!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initVars() {
@@ -106,6 +117,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
 
     @Override
     public void retrieveUserData() {
+        if (repository == null) {
+            return;
+        }
         this.nickNameTV.setText(repository.getUser().getNickName());
         this.emailTV.setText(repository.getUser().getEmail());
         this.numberOfVisitedSpotsTV.setText("Visited spots: " + (repository.getUser().getVisitedSpots().size()
@@ -115,6 +129,10 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
 
     @Override
     public void retrieveFoundSpotsData() {
+        if (repository == null) {
+            return;
+        }
+
         if (repository.getFoundSpots() != null && repository.getFoundSpots().size() > 0) {
             this.numberOfFoundSpotsTV.setText("My Spots: " + repository.getFoundSpots().size());
         } else {
