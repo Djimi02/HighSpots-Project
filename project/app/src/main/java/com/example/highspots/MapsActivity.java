@@ -15,11 +15,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -47,7 +45,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.highspots.databinding.ActivityMapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -58,15 +55,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -172,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        updateDeviceLocation();
 
         initViews(); // should be called before initVars()
         initVars();
@@ -258,6 +251,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.open_spot_dialog, null);
 
+        updateDeviceLocation();
         initOpenSpotDialogViews(popupView, spot);
 
         // show dialog
@@ -414,6 +408,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void filterSpots() {
+        if (lastKnownLocation == null) {
+            Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+        }
+        
         List<String> selectedFeatures = getSelectedFeatures();
 
         List<Spot> filteredSpots;
@@ -440,6 +438,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.add_spot_dialog, null);
 
+        updateDeviceLocation();
         initAddSpotDialogViews(popupView);
 
         // show dialog
@@ -599,6 +598,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* ========================== <START> Auxiliary Functions Block ========================== */
 
     private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
+        if (lastKnownLocation == null) {
+            return false;
+        }
+
         double[] spotLocation = spotLocStringToDouble(spot);
         float[] distanceResult = new float[3];
         Location.distanceBetween(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), spotLocation[0], spotLocation[1], distanceResult);
@@ -647,7 +650,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void getDeviceLocation() {
+    private void updateDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -670,6 +673,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 });
+            } else {
+                requestLocationPermission();
             }
         } catch (SecurityException e)  {
         }
