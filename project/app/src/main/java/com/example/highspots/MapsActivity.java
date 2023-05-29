@@ -543,6 +543,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void saveSpot() {
         String location;
         if (addSpotDialogLocOptionsSpinner.getSelectedItemPosition() == 0) { // Get current location
+            if (lastKnownLocation == null) {
+                Toast.makeText(this, "No location found!", Toast.LENGTH_LONG).show();
+                return;
+            }
             location = lastKnownLocation.getLatitude() + "," + lastKnownLocation.getLongitude();
         } else if (addSpotDialogLocOptionsSpinner.getSelectedItemPosition() == 1) { // Get location from map
             Toast.makeText(this, "This location option is not yet implemented!", Toast.LENGTH_LONG).show();
