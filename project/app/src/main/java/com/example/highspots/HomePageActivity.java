@@ -2,6 +2,8 @@ package com.example.highspots;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,14 +12,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.highspots.adapters.FoundSpotsRVAdapter;
+import com.example.highspots.interfaces.FoundSpotClickListener;
 import com.example.highspots.interfaces.UserDataListener;
 import com.example.highspots.models.Spot;
 import com.example.highspots.repositories.UserDataRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class HomePageActivity extends AppCompatActivity implements UserDataListener {
+import java.util.List;
+
+public class HomePageActivity extends AppCompatActivity implements UserDataListener, FoundSpotClickListener {
 
     /* Views */
     private TextView nickNameTV;
@@ -28,6 +35,11 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     private TextView numberOfFoundSpotsTV;
     private TextView averageRatingFoundSpotsTV;
     private TextView numberOfVisitorsToMySpotTV;
+    private RecyclerView foundSpotsRV;
+
+    /* Variables */
+    List<Spot> foundSpots;
+    FoundSpotsRVAdapter foundSpotsAdapter;
 
     /* Database */
     UserDataRepository repository;
@@ -38,8 +50,8 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         setContentView(R.layout.activity_home_page);
         this.getSupportActionBar().hide();
 
+        initVars(); // Should be called before initViews()
         initViews();
-        initVars();
     }
 
     private void initViews() {
@@ -78,11 +90,18 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
             }
         });
 
+        // Configure found spots adapter
+        this.foundSpotsRV = findViewById(R.id.homePageFoundSpotsRV);
+        this.foundSpotsAdapter = new FoundSpotsRVAdapter(this.foundSpots, this);
+        foundSpotsRV.setAdapter(foundSpotsAdapter);
+        foundSpotsRV.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void initVars() {
         this.repository = UserDataRepository.getInstance();
         repository.addListener(this);
+
+        this.foundSpots = repository.getFoundSpots();
     }
 
     @Override
@@ -97,7 +116,6 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
     @Override
     public void retrieveFoundSpotsData() {
         if (repository.getFoundSpots() != null && repository.getFoundSpots().size() > 0) {
-            System.out.println("My Spots: " + repository.getFoundSpots().size());
             this.numberOfFoundSpotsTV.setText("My Spots: " + repository.getFoundSpots().size());
         } else {
             this.numberOfFoundSpotsTV.setText("My Spots: No Spots");
@@ -120,6 +138,12 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
             numberOfVisitorsToMySpotTV.setText("Visitors of My Spots: No Spots");
         }
 
+        foundSpotsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFoundSpotClick(Spot clickedSpot) {
+        Toast.makeText(this, "Clicked!", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -127,4 +151,5 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         super.onResume();
         this.bottomNavigationView.setSelectedItemId(R.id.navigation_home);
     }
+
 }

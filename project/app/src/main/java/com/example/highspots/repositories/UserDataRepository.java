@@ -67,6 +67,7 @@ public class UserDataRepository {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
+                foundSpots.clear();
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     String spotID = ds.getValue(String.class);
                     spotsDataReference.child(spotID).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -74,7 +75,6 @@ public class UserDataRepository {
                         public void onSuccess(DataSnapshot dataSnapshot) {
                             Spot spot = dataSnapshot.getValue(Spot.class);
                             if (spot != null) {
-                                System.out.println(spot.getDbID());
                                 foundSpots.add(spot);
                                 notifyListenersOnFoundSpotsDataChanged();
                             }
