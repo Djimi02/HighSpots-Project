@@ -238,18 +238,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (homePageSelectedSpot != null) {
                     allSpots.add(homePageSelectedSpot);
                     setCameraOnSpot(homePageSelectedSpot);
-                    System.out.println(" SPOT ADDEDD =================================================");
                 } else {
-                    System.out.println(" SPOT NOT ADDED =================================================");
                 }
 
                 for (DataSnapshot ds : task.getResult().getChildren()) {
                     Spot spot = ds.getValue(Spot.class);
 
+                    if (spot == null) {
+                        continue;
+                    }
+
+                    if (homePageSelectedSpot != null) { // Handles duplicates
+                        if (spot.getDbID().equals(homePageSelectedSpot.getDbID())) { // Handles duplicates
+                            continue;
+                        }
+                    }
+
 //                    if (isUserCloseToSpot(spot, menuSlider.getValue() * 1000)) {
                         allSpots.add(spot); // uncomment the if-statement later
 //                    }
                 }
+                
                 addSpotsOnMap(allSpots);
             }
         });
