@@ -42,6 +42,7 @@ public class FoundSpotsRVAdapter extends RecyclerView.Adapter<FoundSpotsRVAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.ratingTV.setText("Rating: " + String.format("%.2f", foundSpots.get(position).getRating()));
         holder.visitorsTV.setText("Visitors: " + foundSpots.get(position).getVisitors().size());
+        holder.imageView.setImageResource(R.drawable.found_spot_icon);
     }
 
     @Override
@@ -53,6 +54,7 @@ public class FoundSpotsRVAdapter extends RecyclerView.Adapter<FoundSpotsRVAdapte
 
         private final TextView ratingTV;
         private final TextView visitorsTV;
+        private final ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
@@ -60,6 +62,7 @@ public class FoundSpotsRVAdapter extends RecyclerView.Adapter<FoundSpotsRVAdapte
 
             this.ratingTV = view.findViewById(R.id.foundSpotsItemRatingTV);
             this.visitorsTV = view.findViewById(R.id.foundSpotsItemVisitorsTV);
+            this.imageView = view.findViewById(R.id.featureIV);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
