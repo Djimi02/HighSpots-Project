@@ -39,28 +39,28 @@
             android:id="@+id/mapsMenuSlider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:stepSize="3"
+            android:valueFrom="3.0"
+            android:valueTo="30.0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mapsMenuChooseDistanceTV"
-            android:valueFrom="3.0"
-            android:valueTo="30.0"
-            android:stepSize="3"
-            app:trackColor="@color/dark_button_color"
-            app:thumbColor="@color/dark_button_color"/>
+            app:thumbColor="@color/dark_button_color"
+            app:trackColor="@color/dark_button_color" />
 
         <GridLayout
             android:id="@+id/mapMenuGridLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/_12sdp"
             app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
         <Button
             android:id="@+id/mapsMenuFilterBTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/_28sdp"
             android:text="Filter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/_28sdp"
             android:text="Filter by features:"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,5 @@
             app:layout_constraintTop_toBottomOf="@+id/mapsMenuFilterBTN" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </ScrollView>

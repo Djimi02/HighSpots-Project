@@ -1,125 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/add_spot_dialog_background">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/addSpotDialogTitleTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Add Spot"
-            android:textSize="40dp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/addSpotDialogSubTitleTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Share a chill spot with the others!"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/addSpotDialogTitleTV"
-            app:layout_constraintStart_toStartOf="@+id/addSpotDialogTitleTV"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogTitleTV" />
-
-        <Spinner
-            android:id="@+id/addSpotDialogLocationSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogSubTitleTV"
-            android:popupBackground="@color/bottom_nav_color"/>
-
-        <TextView
-            android:id="@+id/addSpotDialogRatingTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
-            android:text="Rating: "
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/addSpotRatingSlider"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogLocationSpinner" />
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/addSpotRatingSlider"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:stepSize="0.5"
-            android:valueFrom="0.0"
-            android:valueTo="10.0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogRatingTV"
-            app:thumbColor="@color/dark_button_color"
-            app:trackColor="@color/dark_button_color" />
-
-        <GridLayout
-            android:id="@+id/addSpotDialogGridLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="32dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/addSpotRatingSlider" />
+            android:layout_height="match_parent" >
 
-        <ImageView
-            android:id="@+id/addSpotIV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotDialogGridLayout"
-            android:adjustViewBounds="true"/>
+            <TextView
+                android:id="@+id/addSpotDialogTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Add Spot"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/addSpotAddImageBTN"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/dark_button_color"
-            android:text="Add Image"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotIV" />
+            <TextView
+                android:id="@+id/addSpotDialogSubTitleTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Share a chill spot with the others!"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/addSpotDialogTitleTV"
+                app:layout_constraintStart_toStartOf="@+id/addSpotDialogTitleTV"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotDialogTitleTV" />
 
-        <Button
-            android:id="@+id/addSpotSaveBTN"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="32dp"
-            android:backgroundTint="@color/dark_button_color"
-            android:text="Save Spot"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addSpotAddImageBTN" />
+            <Spinner
+                android:id="@+id/addSpotDialogLocationSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotDialogSubTitleTV"
+                android:popupBackground="@color/bottom_nav_color"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/addSpotDialogRatingTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:text="Rating: "
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="@+id/addSpotRatingSlider"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotDialogLocationSpinner" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/addSpotRatingSlider"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:stepSize="0.5"
+                android:valueFrom="0.0"
+                android:valueTo="10.0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotDialogRatingTV"
+                app:thumbColor="@color/dark_button_color"
+                app:trackColor="@color/dark_button_color" />
+
+            <GridLayout
+                android:id="@+id/addSpotDialogGridLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toBottomOf="@id/addSpotRatingSlider" />
+
+            <ImageView
+                android:id="@+id/addSpotIV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotDialogGridLayout"
+                android:adjustViewBounds="true"/>
+
+            <Button
+                android:id="@+id/addSpotAddImageBTN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:backgroundTint="@color/dark_button_color"
+                android:text="Add Image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotIV" />
+
+            <Button
+                android:id="@+id/addSpotSaveBTN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="32dp"
+                android:backgroundTint="@color/dark_button_color"
+                android:text="Save Spot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addSpotAddImageBTN" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
