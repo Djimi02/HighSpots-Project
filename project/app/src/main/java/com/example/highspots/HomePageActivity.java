@@ -161,7 +161,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
 
     @Override
     public void onFoundSpotClick(Spot clickedSpot) {
-        Toast.makeText(this, "Clicked!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("Spot", clickedSpot);
+        startActivity(intent);
     }
 
     @Override

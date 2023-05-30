@@ -232,6 +232,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
                 allSpots.clear();
+
+                // This spot is added if it is selected from the homepage recycler view
+                Spot homePageSelectedSpot = (Spot) getIntent().getSerializableExtra("Spot");
+                if (homePageSelectedSpot != null) {
+                    allSpots.add(homePageSelectedSpot);
+                    setCameraOnSpot(homePageSelectedSpot);
+                    System.out.println(" SPOT ADDEDD =================================================");
+                } else {
+                    System.out.println(" SPOT NOT ADDED =================================================");
+                }
+
                 for (DataSnapshot ds : task.getResult().getChildren()) {
                     Spot spot = ds.getValue(Spot.class);
 
@@ -620,12 +631,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    private void setCameraOnSpot(Spot spot) {
+        double[] latLng = spotLocStringToDouble(spot);
+
+        if (latLng == null || mMap == null) {
+            return;
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latLng[0], latLng[1]), 15f));
+
+    }
+
     /**
      * Given Spot object, converts the string location to array of doubles.
      * @param spot
-     * @return - array of doubles where arr[0] = lat and arr[1] = lng
+     * @return - array of doubles where arr[0] = lat and arr[1] = lng; or null if the spot is null
      */
     private double[] spotLocStringToDouble(Spot spot) {
+        if (spot == null) {
+            return null;
+        }
+
         String[] latLngSTR = spot.getLocation().split(",");
         double[] latLng = new double[2];
         latLng[0] = Double.parseDouble(latLngSTR[0]);

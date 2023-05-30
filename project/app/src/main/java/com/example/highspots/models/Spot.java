@@ -1,9 +1,10 @@
 package com.example.highspots.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Spot {
+public class Spot implements Serializable {
 
     private List<String> features = new ArrayList<>();
     private String location;
