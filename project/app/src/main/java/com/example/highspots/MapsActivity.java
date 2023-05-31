@@ -165,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
-        updateDeviceLocation();
+        updateDeviceLocation(true);
 
         initViews(); // should be called before initVars()
         initVars();
@@ -271,7 +271,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.open_spot_dialog, null);
 
-        updateDeviceLocation();
+        updateDeviceLocation(false);
         initOpenSpotDialogViews(popupView, spot);
 
         // show dialog
@@ -458,7 +458,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.add_spot_dialog, null);
 
-        updateDeviceLocation();
+        updateDeviceLocation(false);
         initAddSpotDialogViews(popupView);
 
         // show dialog
@@ -685,7 +685,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void updateDeviceLocation() {
+    private void updateDeviceLocation(boolean moveCamera) {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -696,18 +696,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            lastKnownLocation = task.getResult();
-                            if (lastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(),
-                                                lastKnownLocation.getLongitude()), 15f));
-                            } else {
-                                Toast.makeText(MapsActivity.this, "No location found!", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
+                        if (!task.isSuccessful()) {
                             Toast.makeText(MapsActivity.this, "No location found!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // Set the map's camera position to the current location of the device.
+                        lastKnownLocation = task.getResult();
+                        if (lastKnownLocation == null) {
+                            Toast.makeText(MapsActivity.this, "No location found!", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        if (moveCamera) {
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lastKnownLocation.getLatitude(),
+                                            lastKnownLocation.getLongitude()), 18f));
                         }
                     }
                 });
