@@ -14,17 +14,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/openSpotDialogIV"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
-                android:adjustViewBounds="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:cardCornerRadius="@dimen/_15sdp"
+                android:id="@+id/openSpotDialogIVCV">
+
+                <ImageView
+                    android:id="@+id/openSpotDialogIV"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/openSpotDialogRatingTV"
@@ -35,7 +43,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/openSpotDialogCV"
-                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIV" />
+                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIVCV" />
 
             <TextView
                 android:id="@+id/openSpotDialogVisitorsTV"
@@ -46,7 +54,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
-                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIV" />
+                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogIVCV" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/openSpotDialogCV"
