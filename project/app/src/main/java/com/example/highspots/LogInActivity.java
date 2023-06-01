@@ -1,6 +1,7 @@
 package com.example.highspots;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -8,10 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,9 +43,18 @@ public class LogInActivity extends AppCompatActivity {
     private Button logInBTN;
     private TextView goToRegisterBTN;
     private ProgressBar progressBar;
+    private TextView forgotPasswordTV;
 
     /* Vars */
     private long lastClickTime = 0;
+
+    /* Dialog */
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
+
+    /* Dialog Views */
+    private EditText resetPasswordEmailET;
+    private Button resetPasswordBTN;
 
     /* Database */
     private DatabaseReference usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
@@ -127,6 +137,14 @@ public class LogInActivity extends AppCompatActivity {
 
         this.progressBar = findViewById(R.id.logInPagePB);
         progressBar.setVisibility(View.GONE);
+
+        this.forgotPasswordTV = findViewById(R.id.logInPageForgotPasswordTV);
+        forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openResetEmailDialog();
+            }
+        });
     }
 
     private boolean isDataValid() {
@@ -180,6 +198,83 @@ public class LogInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Reset password via email logic is handled in this method.
+     */
+    private void openResetEmailDialog() {
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.forgot_password_dialog, null);
+
+        // Init dialog views
+        this.resetPasswordEmailET = popupView.findViewById(R.id.forgotPassDialogEmailET);
+        this.resetPasswordBTN = popupView.findViewById(R.id.forgotPassDialogBTN);
+
+        resetPasswordBTN.setEnabled(false); // Button is initially disabled
+
+        resetPasswordEmailET.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String email = resetPasswordEmailET.getText().toString().trim();
+
+                if (!email.isEmpty()) {
+                    resetPasswordBTN.setEnabled(true);
+                } else {
+                    resetPasswordBTN.setEnabled(false);
+                }
+            }
+        });
+
+        resetPasswordEmailET.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetPasswordEmailET.setCursorVisible(true);
+            }
+        });
+
+        resetPasswordBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = resetPasswordEmailET.getText().toString().trim();
+
+                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    resetPasswordEmailET.setError("You should input valid email!");
+                    return;
+                }
+
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(LogInActivity.this, "Check your email!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LogInActivity.this, "Check your spam folder!", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        } else {
+                            if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                                Toast.makeText(LogInActivity.this, "User with the specified email does not exist!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LogInActivity.this, "Something went wrong! Try again later!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+
+                resetPasswordEmailET.setCursorVisible(false);
+                hideSoftKeyboard(popupView);
+            }
+        });
+
+        // show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
     }
 
     private void hideSoftKeyboard(View view){

@@ -20,7 +20,7 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/LogInPageTitle"
-        app:layout_constraintVertical_bias="0.17000002" />
+        app:layout_constraintVertical_bias="0.15" />
 
     <TextView
         android:id="@+id/LogInPageTitle"
@@ -62,11 +62,21 @@
         android:id="@+id/LogInPageRegisterBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginTop="@dimen/_14sdp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="@+id/LogInPageLogInBTN"
         app:layout_constraintStart_toStartOf="@+id/LogInPageLogInBTN"
         app:layout_constraintTop_toBottomOf="@+id/LogInPageLogInBTN" />
+
+    <TextView
+        android:id="@+id/logInPageForgotPasswordTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot password?"
+        app:layout_constraintEnd_toEndOf="@+id/LogInPageRegisterBTN"
+        app:layout_constraintStart_toStartOf="@+id/LogInPageRegisterBTN"
+        app:layout_constraintTop_toBottomOf="@+id/LogInPageRegisterBTN"
+        android:layout_marginTop="@dimen/_14sdp"/>
 
     <ProgressBar
         android:id="@+id/logInPagePB"
@@ -76,6 +86,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.72" />
+        app:layout_constraintVertical_bias="0.75" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
