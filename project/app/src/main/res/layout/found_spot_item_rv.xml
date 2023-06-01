@@ -20,10 +20,17 @@
             android:paddingBottom="@dimen/_5sdp"
             android:paddingLeft="@dimen/_5sdp">
 
-            <ImageView
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
-                android:id="@+id/featureIV"/>
+                app:cardCornerRadius="@dimen/_15sdp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/featureIV"/>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:paddingLeft="@dimen/_10sdp"

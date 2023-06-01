@@ -120,6 +120,12 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         if (repository == null) {
             return;
         }
+        
+        if (repository.getUser() == null) {
+            Toast.makeText(this, "No used found! Log out and log in again!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         this.nickNameTV.setText(repository.getUser().getNickName());
         this.emailTV.setText(repository.getUser().getEmail());
         this.numberOfVisitedSpotsTV.setText("Visited spots: " + (repository.getUser().getVisitedSpots().size()
