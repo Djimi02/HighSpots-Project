@@ -282,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void initOpenSpotDialogViews(View popupView, Spot spot) {
         this.spotRatingTV = popupView.findViewById(R.id.openSpotDialogRatingTV);
-        spotRatingTV.setText("Rating: " + spot.getRating());
+        spotRatingTV.setText("Rating: " + String.format("%.2f", spot.getRating()));
 
         this.numberOfVisitorsTV = popupView.findViewById(R.id.openSpotDialogVisitorsTV);
         numberOfVisitorsTV.setText("Visitors: " + spot.getVisitors().size());
@@ -320,9 +320,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Disable the visit btn if the user has found or already visited the spot
-        if (spot.getCreatorID().equals(UserDataRepository.getInstance().getUser().getDbID())) {
-            visitSpotBTN.setEnabled(false);
-            visitSpotBTN.setText("Found");
+
+        if (spot.getCreatorID() != null) {
+            if (spot.getCreatorID().equals(UserDataRepository.getInstance().getUser().getDbID())) {
+                visitSpotBTN.setEnabled(false);
+                visitSpotBTN.setText("Found");
+            }
         } else if (UserDataRepository.getInstance().getUser().getVisitedSpots().containsKey(spot.getDbID())) {
             visitSpotBTN.setEnabled(false);
             visitSpotBTN.setText("Visited");

@@ -111,26 +111,26 @@
                 android:id="@+id/openSpotDialogRateBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_25sdp"
                 android:backgroundTint="@color/dark_button_color"
                 android:text="Rate Spot"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
-                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogCV"
-                android:layout_marginBottom="@dimen/_25sdp"/>
+                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogRateWithBTN" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/openSpotDialogRatingSlider"
-                android:layout_width="300dp"
+                android:layout_width="@dimen/_250sdp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_15sdp"
                 android:stepSize="0.5"
                 android:valueFrom="0"
                 android:valueTo="10"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="@+id/openSpotDialogRateBTN"
-                app:layout_constraintStart_toStartOf="@+id/openSpotDialogVisitBTN"
-                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogVisitBTN" />
+                app:layout_constraintEnd_toEndOf="@+id/openSpotDialogCV"
+                app:layout_constraintStart_toStartOf="@+id/openSpotDialogCV"
+                app:layout_constraintTop_toBottomOf="@+id/openSpotDialogCV" />
 
             <Button
                 android:id="@+id/openSpotDialogRateWithBTN"
