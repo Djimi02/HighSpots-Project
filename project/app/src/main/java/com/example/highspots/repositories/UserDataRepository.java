@@ -21,7 +21,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class UserDataRepository {
@@ -127,7 +129,7 @@ public class UserDataRepository {
         spotsDataReference.child(spot.getDbID()).setValue(spot);
     }
 
-    public Spot addNewSpot(List<String> newSpotFeatures, double rating, String location, ImageView imageView) {
+    public Spot addNewSpot(Map<String, String> newSpotFeatures, double rating, String location, ImageView imageView) {
 
         // Extracting the image from the image view and uploading it to db
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
@@ -143,7 +145,7 @@ public class UserDataRepository {
         // Create new spot
         String newSpotID = spotsDataReference.push().getKey();
         int numberOfRatings = 1;
-        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, new ArrayList<String>(), this.userID, imageName);
+        Spot newSpot = new Spot(newSpotFeatures, location, newSpotID, rating, numberOfRatings, new HashMap<String, String>(), this.userID, imageName);
         newSpot.addVisitor(this.user.getDbID());
 
         // Update user
@@ -178,14 +180,16 @@ public class UserDataRepository {
     }
 
     public void deleteUser() {
-        for (String visitedSpotID : this.user.getVisitedSpots()) {
+        for (String visitedSpotID : this.user.getVisitedSpots().keySet()) {
             spotsDataReference.child(visitedSpotID).child("visitors").child(user.getDbID()).setValue(null);
         }
 
-        for (String foundSpotID : this.user.getFoundSpots()) {
+        for (String foundSpotID : this.user.getFoundSpots().keySet()) {
             spotsDataReference.child(foundSpotID).child("visitors").child(user.getDbID()).setValue(null);
             spotsDataReference.child(foundSpotID).child("creatorID").setValue(null);
         }
+
+        usersDataReference.child(this.user.getDbID()).setValue(null);
     }
 
     public void addListener(UserDataListener listener) {

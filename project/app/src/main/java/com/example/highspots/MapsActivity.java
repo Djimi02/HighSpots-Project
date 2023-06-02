@@ -323,20 +323,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (spot.getCreatorID().equals(UserDataRepository.getInstance().getUser().getDbID())) {
             visitSpotBTN.setEnabled(false);
             visitSpotBTN.setText("Found");
-        } else if (UserDataRepository.getInstance().getUser().getVisitedSpots().contains(spot.getDbID())) {
+        } else if (UserDataRepository.getInstance().getUser().getVisitedSpots().containsKey(spot.getDbID())) {
             visitSpotBTN.setEnabled(false);
             visitSpotBTN.setText("Visited");
         }
 
         // Disable the rate btn if the user has already rated the spot
-        if (UserDataRepository.getInstance().getUser().getRatedSpots().contains(spot.getDbID())) {
+        if (UserDataRepository.getInstance().getUser().getRatedSpots().containsKey(spot.getDbID())) {
             rateSpotBTN.setEnabled(false);
             rateSpotBTN.setText("Rated");
         }
 
         // Configure features recycler view adapter
         this.spotFeaturesRV = popupView.findViewById(R.id.openSpotDialogRV);
-        FeatureRVAdapter rvAdapter = new FeatureRVAdapter(spot.getFeatures());
+        FeatureRVAdapter rvAdapter = new FeatureRVAdapter(new ArrayList<>(spot.getFeatures().keySet()));
         spotFeaturesRV.setAdapter(rvAdapter);
         spotFeaturesRV.setLayoutManager(new LinearLayoutManager(this));
 
@@ -436,7 +436,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<Spot> filteredSpots;
         filteredSpots = allSpots.stream()
-                .filter(spot -> isUserCloseToSpot(spot, menuSlider.getValue() * 1000) && spot.getFeatures().stream()
+                .filter(spot -> isUserCloseToSpot(spot, menuSlider.getValue() * 1000) && spot.getFeatures().keySet().stream()
                         .anyMatch(feature -> selectedFeatures.contains(feature))).collect(Collectors.toList());
 
         addSpotsOnMap(filteredSpots);
@@ -575,10 +575,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         // Collect the selected features
-        List<String> newSpotFeatures = new ArrayList<>();
+        Map<String, String> newSpotFeatures = new HashMap<>();
         for (CheckBox checkBox : addSpotDialogFeatureCheckBoxes) {
             if (checkBox.isChecked()) {
-                newSpotFeatures.add(checkBox.getText().toString());
+                String feature = checkBox.getText().toString();
+                newSpotFeatures.put(feature, feature);
             }
         }
 

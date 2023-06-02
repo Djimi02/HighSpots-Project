@@ -170,9 +170,9 @@ public class SettingsActivity extends AppCompatActivity {
                                     return;
                                 }
 
-                                // TODO delete what needs to be deleted here
+                                repository.deleteUser();
 
-                                usersDataReference.child(repository.getUser().getDbID()).setValue(null);
+
                                 dialog.dismiss();
                                 goToLoginPage();
                                 Toast.makeText(SettingsActivity.this, "Account was deleted successfully.", Toast.LENGTH_SHORT).show();

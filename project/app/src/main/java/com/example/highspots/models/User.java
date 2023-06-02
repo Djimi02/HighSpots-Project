@@ -1,16 +1,18 @@
 package com.example.highspots.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class User {
 
     private String dbID;
     private String nickName;
     private String email;
-    private List<String> foundSpots = new ArrayList<>();
-    private List<String> visitedSpots = new ArrayList<>();
-    private List<String> ratedSpots = new ArrayList<>();
+    private Map<String, String> foundSpots = new HashMap<>();
+    private Map<String, String> visitedSpots = new HashMap<>();
+    private Map<String, String> ratedSpots = new HashMap<>();
 
     public User() { }
 
@@ -44,24 +46,16 @@ public class User {
         this.email = email;
     }
 
-    public List<String> getFoundSpots() {
+    public Map<String, String> getFoundSpots() {
         return foundSpots;
     }
 
-    public void setFoundSpots(List<String> foundSpots) {
-        this.foundSpots = foundSpots;
-    }
-
-    public List<String> getVisitedSpots() {
+    public Map<String, String> getVisitedSpots() {
         return visitedSpots;
     }
 
-    public void setVisitedSpots(List<String> visitedSpots) {
-        this.visitedSpots = visitedSpots;
-    }
-
     public void addFoundSpot(String foundSpot) {
-        this.foundSpots.add(foundSpot);
+        this.foundSpots.put(foundSpot, foundSpot);
     }
 
     public void removeFoundSpot(String foundSpot) {
@@ -69,23 +63,19 @@ public class User {
     }
 
     public void addVisitedSpot(String visitedSpot) {
-        this.visitedSpots.add(visitedSpot);
+        this.visitedSpots.put(visitedSpot, visitedSpot);
     }
 
     public void removeVisitedSpot(String visitedSpot) {
         this.visitedSpots.remove(visitedSpot);
     }
 
-    public List<String> getRatedSpots() {
+    public Map<String, String> getRatedSpots() {
         return ratedSpots;
     }
 
-    public void setRatedSpots(List<String> ratedSpots) {
-        this.ratedSpots = ratedSpots;
-    }
-
     public void addRatedSpot(String newlyRatedSpot) {
-        this.ratedSpots.add(newlyRatedSpot);
+        this.ratedSpots.put(newlyRatedSpot, newlyRatedSpot);
     }
 
 }

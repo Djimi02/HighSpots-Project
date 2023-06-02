@@ -2,22 +2,24 @@ package com.example.highspots.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Spot implements Serializable {
 
-    private List<String> features = new ArrayList<>();
+    private Map<String, String> features = new HashMap<>();
     private String location;
     private String dbID;
     private double rating;
     private int numberOfRatings;
-    private List<String> visitors;
+    private Map<String, String> visitors = new HashMap<>();
     private String imageName;
     private String creatorID;
 
     public Spot() { }
 
-    public Spot(List<String> features, String location, String dbID, double rating, int numberOfRatings, List<String> visitors, String creatorID, String imageName) {
+    public Spot(Map<String, String> features, String location, String dbID, double rating, int numberOfRatings, Map<String, String> visitors, String creatorID, String imageName) {
         this.features = features;
         this.location = location;
         this.dbID = dbID;
@@ -28,12 +30,8 @@ public class Spot implements Serializable {
         this.imageName = imageName;
     }
 
-    public List<String> getFeatures() {
+    public Map<String, String> getFeatures() {
         return features;
-    }
-
-    public void setFeatures(List<String> features) {
-        this.features = features;
     }
 
     public String getLocation() {
@@ -45,7 +43,7 @@ public class Spot implements Serializable {
     }
 
     public void addFeature(String feature) {
-        this.features.add(feature);
+        this.features.put(feature, feature);
     }
 
     public String getDbID() {
@@ -72,16 +70,12 @@ public class Spot implements Serializable {
         this.numberOfRatings = numberOfRatings;
     }
 
-    public List<String> getVisitors() {
+    public Map<String, String> getVisitors() {
         return visitors;
     }
 
-    public void setVisitors(List<String> visitors) {
-        this.visitors = visitors;
-    }
-
     public void addVisitor(String visitorID) {
-        this.visitors.add(visitorID);
+        this.visitors.put(visitorID, visitorID);
     }
 
     public String getCreatorID() {
