@@ -10,4 +10,5 @@
     <color name="menu_button_background">#9ee19f</color>
     <color name="dark_button_color">#6d86a2</color>
     <color name="bottom_nav_color">#95ccac</color>
+    <color name="button_red">#b80425</color>
 </resources>

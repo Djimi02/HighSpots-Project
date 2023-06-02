@@ -177,6 +177,17 @@ public class UserDataRepository {
         updateUserInDB();
     }
 
+    public void deleteUser() {
+        for (String visitedSpotID : this.user.getVisitedSpots()) {
+            spotsDataReference.child(visitedSpotID).child("visitors").child(user.getDbID()).setValue(null);
+        }
+
+        for (String foundSpotID : this.user.getFoundSpots()) {
+            spotsDataReference.child(foundSpotID).child("visitors").child(user.getDbID()).setValue(null);
+            spotsDataReference.child(foundSpotID).child("creatorID").setValue(null);
+        }
+    }
+
     public void addListener(UserDataListener listener) {
         this.listeners.add(listener);
     }

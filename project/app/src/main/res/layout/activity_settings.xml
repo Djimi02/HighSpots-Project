@@ -19,19 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/SettingsPageLogOutBTN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/_24sdp"
-                android:layout_marginTop="@dimen/_24sdp"
-                android:backgroundTint="@color/dark_button_color"
-                android:text="logout"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SettingsPageNicknameET" />
-
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
@@ -67,6 +54,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/SettingsPageNicknameET"
                 app:layout_constraintTop_toTopOf="@+id/SettingsPageNicknameET" />
+
+            <Button
+                android:id="@+id/SettingsPageLogOutBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_24sdp"
+                android:backgroundTint="@color/dark_button_color"
+                android:text="logout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageNicknameET" />
+
+            <Button
+                android:id="@+id/settingsPageDeleteAccBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:backgroundTint="@color/button_red"
+                android:text="Delete Account"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageLogOutBTN" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

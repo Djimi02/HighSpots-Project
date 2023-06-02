@@ -1,6 +1,7 @@
 package com.example.highspots;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -14,9 +15,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -25,9 +33,15 @@ public class SettingsActivity extends AppCompatActivity {
     private EditText nickNameET;
     private Button saveNicknameET;
     private BottomNavigationView bottomNavigationView;
+    private Button deleteAccountBTN;
+
+    /* Dialog */
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog dialog;
 
     /* Database */
     private UserDataRepository repository;
+    private DatabaseReference usersDataReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +102,19 @@ public class SettingsActivity extends AppCompatActivity {
                 Toast.makeText(SettingsActivity.this, "Nickname updated successfully!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        this.deleteAccountBTN = findViewById(R.id.settingsPageDeleteAccBTN);
+        deleteAccountBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDeleteAccountDialog();
+            }
+        });
     }
 
     private void initVars() {
         this.repository = UserDataRepository.getInstance();
+        this.usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
     }
 
     private void updateNickName() {
@@ -103,6 +126,67 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         repository.updateNickName(newNickName);
+    }
+
+    private void openDeleteAccountDialog() {
+        // Build dialog
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.delete_account_dialog, null);
+
+        // Init views
+        final EditText passwordET = popupView.findViewById(R.id.deleteAccDialogET);
+        final Button deleteBTN = popupView.findViewById(R.id.deleteAccDialogBTN);
+        deleteBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (repository.getUser() == null || FirebaseAuth.getInstance().getCurrentUser() == null) {
+                    return;
+                }
+
+                String password = passwordET.getText().toString().trim();
+
+                if (password.isEmpty()) {
+                    passwordET.setError("Input you password!");
+                    return;
+                }
+
+                String email = repository.getUser().getEmail();
+                FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+                AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+
+                fUser.reauthenticate(credential).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            passwordET.setError("Incorrect Password");
+                            return;
+                        }
+
+                        fUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(SettingsActivity.this, "Something went wrong try again later!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                // TODO delete what needs to be deleted here
+
+                                usersDataReference.child(repository.getUser().getDbID()).setValue(null);
+                                dialog.dismiss();
+                                goToLoginPage();
+                                Toast.makeText(SettingsActivity.this, "Account was deleted successfully.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        // Show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
     }
 
     /** Redirects to login page and clears the back stack. */
