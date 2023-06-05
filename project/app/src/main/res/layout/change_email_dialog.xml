@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/maps_menu_background">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/log_in_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/changePassDialogCurrentPassET"
+                android:id="@+id/changeEmailDialogCurrentPassET"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_16sdp"
@@ -42,29 +42,28 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             <EditText
-                android:id="@+id/changePassDialogNewPassET"
+                android:id="@+id/changeEmailDialogNewEmailET"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:ems="10"
-                android:hint="Enter New Password"
-                android:inputType="textPassword"
+                android:hint="Enter New Email"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/changePassDialogCurrentPassET" />
+                app:layout_constraintTop_toBottomOf="@+id/changeEmailDialogCurrentPassET" />
 
             <Button
-                android:id="@+id/changePassDialogSaveBTN"
+                android:id="@+id/changeEmailDialogSaveBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_15sdp"
                 android:backgroundTint="@color/button_yellow"
-                android:text="Save Password"
+                android:text="Save Email"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/changePassDialogNewPassET" />
+                app:layout_constraintTop_toBottomOf="@+id/changeEmailDialogNewEmailET" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

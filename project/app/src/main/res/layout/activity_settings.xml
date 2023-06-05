@@ -78,6 +78,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/SettingsPageLogOutBTN" />
 
             <Button
+                android:id="@+id/SettingsPageChangeEmailBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button_yellow"
+                android:text="Change Email"
+                android:layout_marginTop="@dimen/_18sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageChangePassBTN" />
+
+            <Button
                 android:id="@+id/settingsPageDeleteAccBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,7 +99,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SettingsPageChangePassBTN" />
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageChangeEmailBTN" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

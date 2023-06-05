@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,6 +27,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private Button deleteAccountBTN;
     private Button changePassBTN;
+    private Button changeEmailBTN;
 
     /* Dialog */
     private AlertDialog.Builder dialogBuilder;
@@ -121,6 +124,14 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openChangePasswordDialog();
+            }
+        });
+
+        this.changeEmailBTN = findViewById(R.id.SettingsPageChangeEmailBTN);
+        changeEmailBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openChangeEmailDialog();
             }
         });
     }
@@ -239,6 +250,79 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(SettingsActivity.this, "Password has been changed successfully!", Toast.LENGTH_SHORT).show();
                     }
                 }). addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            currentPasswordET.setError("Incorrect Password!");
+                        } else if (e instanceof FirebaseNetworkException) {
+                            Toast.makeText(SettingsActivity.this, "No internet connection!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "Something went wrong! Please try again later!", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        // Show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void openChangeEmailDialog() {
+        // Build dialog
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.change_email_dialog, null);
+
+        final EditText currentPasswordET = popupView.findViewById(R.id.changeEmailDialogCurrentPassET);
+        final EditText newEmailET = popupView.findViewById(R.id.changeEmailDialogNewEmailET);
+        final Button savePasswordBTN = popupView.findViewById(R.id.changeEmailDialogSaveBTN);
+        savePasswordBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (repository.getUser() == null || FirebaseAuth.getInstance().getCurrentUser() == null) {
+                    return;
+                }
+
+                String currentPassword = currentPasswordET.getText().toString().trim();
+                String newEmail = newEmailET.getText().toString().trim();
+
+                if (currentPassword.isEmpty()) {
+                    currentPasswordET.setError("Input your password!");
+                    return;
+                } else if (newEmail.isEmpty()) {
+                    newEmailET.setError("Input your email!");
+                    return;
+                } else if (!Patterns.EMAIL_ADDRESS.matcher(newEmail).matches()) {
+                    newEmailET.setError("Input correct email!");
+                    return;
+                }
+
+                FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+                AuthCredential credential = EmailAuthProvider.getCredential(repository.getUser().getEmail(), currentPassword);
+
+                fUser.reauthenticate(credential).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        fUser.updateEmail(newEmail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                repository.getUser().setEmail(newEmail);
+                                repository.updateUserInDB();
+                                dialog.dismiss();
+                                Toast.makeText(SettingsActivity.this, "Email has been updated successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                if (e instanceof FirebaseAuthUserCollisionException){
+                                    Toast.makeText(SettingsActivity.this, "The specified email is already taken!", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         if (e instanceof FirebaseAuthInvalidCredentialsException) {
