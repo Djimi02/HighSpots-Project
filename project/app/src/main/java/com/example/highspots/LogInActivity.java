@@ -184,7 +184,7 @@ public class LogInActivity extends AppCompatActivity {
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(LogInActivity.this, "LogIn was successful!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LogInActivity.this, "Log In was successful!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
                 finish();
             }
@@ -194,7 +194,7 @@ public class LogInActivity extends AppCompatActivity {
                 if (e instanceof FirebaseAuthInvalidUserException) {
                     Toast.makeText(LogInActivity.this, "There is no user with those credentials!", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(LogInActivity.this, "Registration was not successful! Please try again later!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LogInActivity.this, "Log In was not successful! Please try again later!", Toast.LENGTH_LONG).show();
                 }
             }
         });

@@ -16,12 +16,16 @@ import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,6 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button saveNicknameET;
     private BottomNavigationView bottomNavigationView;
     private Button deleteAccountBTN;
+    private Button changePassBTN;
 
     /* Dialog */
     private AlertDialog.Builder dialogBuilder;
@@ -110,6 +115,14 @@ public class SettingsActivity extends AppCompatActivity {
                 openDeleteAccountDialog();
             }
         });
+
+        this.changePassBTN = findViewById(R.id.SettingsPageChangePassBTN);
+        changePassBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openChangePasswordDialog();
+            }
+        });
     }
 
     private void initVars() {
@@ -146,7 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String password = passwordET.getText().toString().trim();
 
                 if (password.isEmpty()) {
-                    passwordET.setError("Input you password!");
+                    passwordET.setError("Input your password!");
                     return;
                 }
 
@@ -178,6 +191,63 @@ public class SettingsActivity extends AppCompatActivity {
                                 Toast.makeText(SettingsActivity.this, "Account was deleted successfully.", Toast.LENGTH_SHORT).show();
                             }
                         });
+                    }
+                });
+            }
+        });
+
+        // Show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void openChangePasswordDialog() {
+        // Build dialog
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.change_password_dialog, null);
+
+        final EditText currentPasswordET = popupView.findViewById(R.id.changePassDialogCurrentPassET);
+        final EditText newPasswordET = popupView.findViewById(R.id.changePassDialogNewPassET);
+        final Button savePasswordBTN = popupView.findViewById(R.id.changePassDialogSaveBTN);
+        savePasswordBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (repository.getUser() == null || FirebaseAuth.getInstance().getCurrentUser() == null) {
+                    return;
+                }
+
+                String currentPassword = currentPasswordET.getText().toString().trim();
+                String newPassword = newPasswordET.getText().toString().trim();
+
+                if (currentPassword.isEmpty()) {
+                    currentPasswordET.setError("Input your password!");
+                    return;
+                } else if (newPassword.length() < 6) {
+                    newPasswordET.setError("The password should be at least 6 characters long!");
+                    return;
+                }
+
+                FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+                AuthCredential credential = EmailAuthProvider.getCredential(repository.getUser().getEmail(), currentPassword);
+
+                fUser.reauthenticate(credential).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        fUser.updatePassword(newPassword);
+                        dialog.dismiss();
+                        Toast.makeText(SettingsActivity.this, "Password has been changed successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                }). addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            currentPasswordET.setError("Incorrect Password!");
+                        } else if (e instanceof FirebaseNetworkException) {
+                            Toast.makeText(SettingsActivity.this, "No internet connection!", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "Something went wrong! Please try again later!", Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
             }

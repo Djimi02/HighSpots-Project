@@ -11,4 +11,5 @@
     <color name="dark_button_color">#6d86a2</color>
     <color name="bottom_nav_color">#95ccac</color>
     <color name="button_red">#b80425</color>
+    <color name="button_yellow">#c9ac24</color>
 </resources>
