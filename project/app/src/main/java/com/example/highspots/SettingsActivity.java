@@ -136,7 +136,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        this.contactFormBTN = findViewById(R.id.SettingsPageLogOutBTN);
+        this.contactFormBTN = findViewById(R.id.SettingsPageContactFormBTN);
         contactFormBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
