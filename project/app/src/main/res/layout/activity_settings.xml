@@ -67,6 +67,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/SettingsPageNicknameET" />
 
             <Button
+                android:id="@+id/SettingsPageContactFormBTN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/button_yellow"
+                android:text="Contact Form"
+                android:layout_marginTop="@dimen/_18sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageLogOutBTN" />
+
+            <Button
                 android:id="@+id/SettingsPageChangePassBTN"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +86,7 @@
                 android:layout_marginTop="@dimen/_18sdp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SettingsPageLogOutBTN" />
+                app:layout_constraintTop_toBottomOf="@+id/SettingsPageContactFormBTN" />
 
             <Button
                 android:id="@+id/SettingsPageChangeEmailBTN"

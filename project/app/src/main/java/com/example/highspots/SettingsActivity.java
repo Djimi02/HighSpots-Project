@@ -42,6 +42,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button deleteAccountBTN;
     private Button changePassBTN;
     private Button changeEmailBTN;
+    private Button contactFormBTN;
 
     /* Dialog */
     private AlertDialog.Builder dialogBuilder;
@@ -132,6 +133,14 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 openChangeEmailDialog();
+            }
+        });
+
+        this.contactFormBTN = findViewById(R.id.SettingsPageLogOutBTN);
+        contactFormBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openContactFormDialog();
             }
         });
     }
@@ -334,6 +343,28 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        // Show dialog
+        dialogBuilder.setView(popupView);
+        dialog = dialogBuilder.create();
+        dialog.show();
+    }
+
+    private void openContactFormDialog() {
+        // Build dialog
+        dialogBuilder = new AlertDialog.Builder(this);
+        final View popupView = getLayoutInflater().inflate(R.layout.contact_form_dialog, null);
+
+        // Initialize dialog views
+        final EditText subjectET = popupView.findViewById(R.id.contactFormSubjectET);
+        final EditText emailBodyET = popupView.findViewById(R.id.contactFormTextET);
+        final Button submitFormBTN = popupView.findViewById(R.id.contactFormSubmitBTN);
+        submitFormBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
