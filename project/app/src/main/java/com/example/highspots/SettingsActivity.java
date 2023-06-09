@@ -3,9 +3,11 @@ package com.example.highspots;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.MenuItem;
@@ -31,6 +33,19 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -358,13 +373,49 @@ public class SettingsActivity extends AppCompatActivity {
         final View popupView = getLayoutInflater().inflate(R.layout.contact_form_dialog, null);
 
         // Initialize dialog views
-        final EditText subjectET = popupView.findViewById(R.id.contactFormSubjectET);
+        final EditText emailSubjectET = popupView.findViewById(R.id.contactFormSubjectET);
         final EditText emailBodyET = popupView.findViewById(R.id.contactFormTextET);
         final Button submitFormBTN = popupView.findViewById(R.id.contactFormSubmitBTN);
         submitFormBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(SettingsActivity.this, "No Internet connection!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
+                String emailSubjectSTR = emailSubjectET.getText().toString().trim();
+                StringBuilder stringBuilder = new StringBuilder(emailBodyET.getText().toString().trim());
+
+                if (stringBuilder.toString().isEmpty()) {
+                    emailSubjectET.setError("Add subject!");
+                } else if (stringBuilder.toString().isEmpty()) {
+                    emailBodyET.setError("Add your text!");
+                }
+
+                // Append user data to the email body
+                String userData = "User Email: " + repository.getUser().getEmail() + "\n"
+                        + "User ID: " + repository.getUser().getDbID() + "\n"
+                        + "User Nickname: " + repository.getUser().getNickName() + "\n";
+                stringBuilder.append("\n \n " + userData);
+                String emailBodySTR = stringBuilder.toString();
+
+                // Send email in the background
+                new Thread(new Runnable() {
+                    @Override public void run() {
+                        try {
+                            submitForm(emailSubjectSTR, emailBodySTR);
+                        } catch (Exception e) {
+                            System.out.println(e.toString());
+                            return;
+                        }
+
+                        ContextCompat.getMainExecutor(SettingsActivity.this).execute(()  -> {
+                            Toast.makeText(SettingsActivity.this, "Form submitted successfully!", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                        });
+                    }
+                }).start();
             }
         });
 
@@ -372,6 +423,48 @@ public class SettingsActivity extends AppCompatActivity {
         dialogBuilder.setView(popupView);
         dialog = dialogBuilder.create();
         dialog.show();
+    }
+
+    private boolean isNetworkAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void submitForm(String emailSubjectSTR, String emailBodySTR) throws UnsupportedEncodingException, MessagingException {
+        final String emailPort = "587"; // gmail's smtp port
+        final String smtpAuth = "true";
+        final String starttls = "true";
+        final String emailHost = "smtp.gmail.com";
+
+        final String fromEmail = "highspots.sender@gmail.com";
+        final String fromPass = "igxdoxsilkwjumlk";
+        List<String> toEmail = new ArrayList<String>() { { add("team.highspots@gmail.com"); } };
+
+        Properties emailProperties = System.getProperties();
+        emailProperties.put("mail.smtp.port", emailPort);
+        emailProperties.put("mail.smtp.auth", smtpAuth);
+        emailProperties.put("mail.smtp.starttls.enable", starttls);
+
+        // Create message
+        Session mailSession = Session.getDefaultInstance(emailProperties, null);
+        MimeMessage emailMessage = new MimeMessage(mailSession);
+        emailMessage.setFrom(new InternetAddress(fromEmail, fromEmail));
+        emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail.get(0)));
+        emailMessage.setSubject(emailSubjectSTR);
+        emailMessage.setText(emailBodySTR);
+
+        // Send message
+        Transport transport = mailSession.getTransport("smtp");
+        transport.connect(emailHost, fromEmail, fromPass);
+        transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
+        transport.close();
     }
 
     /** Redirects to login page and clears the back stack. */
