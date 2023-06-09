@@ -37,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_28sdp"
                 android:ems="10"
+                android:maxLength="20"
                 android:hint="Nickname"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -425,18 +425,6 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private boolean isNetworkAvailable() {
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-            int exitValue = process.waitFor();
-            return (exitValue == 0);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     public void submitForm(String emailSubjectSTR, String emailBodySTR) throws UnsupportedEncodingException, MessagingException {
         final String emailPort = "587"; // gmail's smtp port
         final String smtpAuth = "true";
@@ -465,6 +453,18 @@ public class SettingsActivity extends AppCompatActivity {
         transport.connect(emailHost, fromEmail, fromPass);
         transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
         transport.close();
+    }
+
+    private boolean isNetworkAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /** Redirects to login page and clears the back stack. */
