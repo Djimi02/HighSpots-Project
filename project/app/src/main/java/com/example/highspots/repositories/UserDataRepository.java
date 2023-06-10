@@ -29,15 +29,17 @@ import java.util.UUID;
 public class UserDataRepository {
 
     private static UserDataRepository instance;
+    private List<UserDataListener> listeners;
 
+    /* User Data */
     private String userID;
     private User user;
     private List<Spot> foundSpots;
+
+    /* Database */
     private DatabaseReference usersDataReference;
     private DatabaseReference spotsDataReference;
     private StorageReference imageStorageReference;
-
-    private List<UserDataListener> listeners;
 
     private UserDataRepository() {
         this.imageStorageReference = FirebaseStorage.getInstance().getReference().child("Images");
@@ -48,6 +50,7 @@ public class UserDataRepository {
 
         this.userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
+        // Fetch user data
         usersDataReference.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -65,6 +68,7 @@ public class UserDataRepository {
             }
         });
 
+        // Fetch user's found spots from db
         usersDataReference.child(userID).child("foundSpots").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
