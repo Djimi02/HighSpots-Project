@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
@@ -58,6 +59,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button changePassBTN;
     private Button changeEmailBTN;
     private Button contactFormBTN;
+    private ImageButton consoleIBTN;
 
     /* Dialog */
     private AlertDialog.Builder dialogBuilder;
@@ -75,16 +77,21 @@ public class SettingsActivity extends AppCompatActivity {
 
         initVars(); // should be called before initViews()
         initViews();
-
-        Toast.makeText(this, repository.getUser().getRole(), Toast.LENGTH_SHORT).show();
     }
 
     /**
      * This method is responsible for initializing the views in this activity.
      */
     private void initViews() {
+        if (repository.getUser() == null) {
+            Toast.makeText(this, "No user found! Log out and log in again!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
         this.logOutBTN = findViewById(R.id.SettingsPageLogOutBTN);
         this.nickNameET = findViewById(R.id.SettingsPageNicknameET);
+        nickNameET.setText(repository.getUser().getNickName());
+
         this.saveNicknameET = findViewById(R.id.SettingsPageSaveNicknameBTN);
         this.bottomNavigationView = findViewById(R.id.nav_view_home_page);
 
@@ -111,9 +118,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if (repository.getUser() != null) {
-            nickNameET.setText(repository.getUser().getNickName());
-        }
 
         logOutBTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,6 +167,17 @@ public class SettingsActivity extends AppCompatActivity {
                 openContactFormDialog();
             }
         });
+
+        if (repository.getUser().getRole().equals("Admin")) {
+            this.consoleIBTN = findViewById(R.id.settingsPageConsoleIBTN);
+            consoleIBTN.setVisibility(View.VISIBLE);
+            consoleIBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(SettingsActivity.this, "Console", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     /**
