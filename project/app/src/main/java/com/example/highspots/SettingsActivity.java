@@ -75,6 +75,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         initVars(); // should be called before initViews()
         initViews();
+
+        Toast.makeText(this, repository.getUser().getRole(), Toast.LENGTH_SHORT).show();
     }
 
     /**

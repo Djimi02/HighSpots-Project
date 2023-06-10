@@ -10,6 +10,7 @@ public class User {
     private String dbID;
     private String nickName;
     private String email;
+    private String role = "User";
     private Map<String, String> foundSpots = new HashMap<>();
     private Map<String, String> visitedSpots = new HashMap<>();
     private Map<String, String> ratedSpots = new HashMap<>();
@@ -78,4 +79,23 @@ public class User {
         this.ratedSpots.put(newlyRatedSpot, newlyRatedSpot);
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setFoundSpots(Map<String, String> foundSpots) {
+        this.foundSpots = foundSpots;
+    }
+
+    public void setVisitedSpots(Map<String, String> visitedSpots) {
+        this.visitedSpots = visitedSpots;
+    }
+
+    public void setRatedSpots(Map<String, String> ratedSpots) {
+        this.ratedSpots = ratedSpots;
+    }
 }
