@@ -77,6 +77,9 @@ public class SettingsActivity extends AppCompatActivity {
         initViews();
     }
 
+    /**
+     * This method is responsible for initializing the views in this activity.
+     */
     private void initViews() {
         this.logOutBTN = findViewById(R.id.SettingsPageLogOutBTN);
         this.nickNameET = findViewById(R.id.SettingsPageNicknameET);
@@ -160,6 +163,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is responsible for initializing the instance variables in this class.
+     */
     private void initVars() {
         this.repository = UserDataRepository.getInstance();
         this.usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
@@ -176,6 +182,9 @@ public class SettingsActivity extends AppCompatActivity {
         repository.updateNickName(newNickName);
     }
 
+    /**
+     * This method contains the logic behind the delete account dialog.
+     */
     private void openDeleteAccountDialog() {
         // Build dialog
         dialogBuilder = new AlertDialog.Builder(this);
@@ -220,7 +229,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                                 repository.deleteUser();
 
-
                                 dialog.dismiss();
                                 goToLoginPage();
                                 Toast.makeText(SettingsActivity.this, "Account was deleted successfully.", Toast.LENGTH_SHORT).show();
@@ -237,6 +245,9 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * This method contains the logic behind the change password dialog.
+     */
     private void openChangePasswordDialog() {
         // Build dialog
         dialogBuilder = new AlertDialog.Builder(this);
@@ -294,6 +305,9 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * This method contains the logic behind the change email dialog.
+     */
     private void openChangeEmailDialog() {
         // Build dialog
         dialogBuilder = new AlertDialog.Builder(this);
@@ -367,6 +381,9 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * This method contains the logic behind the contact form dialog.
+     */
     private void openContactFormDialog() {
         // Build dialog
         dialogBuilder = new AlertDialog.Builder(this);
@@ -425,7 +442,15 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    public void submitForm(String emailSubjectSTR, String emailBodySTR) throws UnsupportedEncodingException, MessagingException {
+    /**
+     * This email is responsible for sending email from highspots.sender@gmail.com to
+     * team.highspots@gmail.com.
+     * @param emailSubjectSTR - the subject of the email
+     * @param emailBodySTR - the body of the email
+     * @throws UnsupportedEncodingException
+     * @throws MessagingException
+     */
+    private void submitForm(String emailSubjectSTR, String emailBodySTR) throws UnsupportedEncodingException, MessagingException {
         final String emailPort = "587"; // gmail's smtp port
         final String smtpAuth = "true";
         final String starttls = "true";
