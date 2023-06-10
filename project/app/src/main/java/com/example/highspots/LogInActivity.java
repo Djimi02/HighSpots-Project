@@ -68,13 +68,20 @@ public class LogInActivity extends AppCompatActivity {
         autoLogIn();
     }
 
+    /**
+     * This method is responsible to check if a user is logged.
+     * If a user is logged and they exist in the db then, the user is prompted to home page.
+     * If no user is logged then the log in view are initialized and the log in page is prepared
+     * to be used.
+     */
     private void autoLogIn() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null || !isNetworkAvailable()) {
+        if (user == null || !isNetworkAvailable()) { // In case of no logged user
             initViews();
             return;
         }
 
+        // Checks if such user exists in the db
         usersDataReference.child(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -85,11 +92,11 @@ public class LogInActivity extends AppCompatActivity {
 
                 User user = task.getResult().getValue(User.class);
 
-                if (user != null) {
+                if (user != null) { // In case the user exits in the db
                     Toast.makeText(LogInActivity.this, "Login was successful!", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
                     finish();
-                } else {
+                } else { // In case the user does not exits in the db
                     initViews();
                 }
             }
@@ -97,7 +104,7 @@ public class LogInActivity extends AppCompatActivity {
 
     }
 
-    public boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable() {
         Runtime runtime = Runtime.getRuntime();
         try {
             Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
@@ -109,6 +116,9 @@ public class LogInActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * This method is responsible for initializing the views in this activity.
+     */
     private void initViews() {
         this.emailET = findViewById(R.id.LogInPageEmailET);
         this.passwordET = findViewById(R.id.LogInPagePasswordET);
@@ -147,6 +157,10 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is responsible for determining whether the user inputted data is correct.
+     * @return - whether the user inputted data is correct
+     */
     private boolean isDataValid() {
         boolean output = true;
 
@@ -172,6 +186,9 @@ public class LogInActivity extends AppCompatActivity {
         return output;
     }
 
+    /**
+     * Tries to log the user in via the FirebaseAuth.
+     */
     private void logIn() {
         if (!isDataValid()) {
             return;
