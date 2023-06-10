@@ -18,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -56,6 +57,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,6 +173,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         initVars();
     }
 
+    /**
+     * This method is responsible for initializing the views being used directly on the map screen.
+     */
     private void initViews() {
         this.drawerLayout = findViewById(R.id.mapsLayout);
 
@@ -221,6 +226,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         initMenuViews();
     }
 
+    /**
+     * This method is responsible for initializing the instance variables being used in this class.
+     */
     private void initVars() {
         this.imageStorageReference = FirebaseStorage.getInstance().getReference().child("Images");
         this.spotDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
@@ -267,6 +275,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* ========================== <START> Open Spot Dialog Block ========================== */
 
+    /**
+     * This method is responsible for opening the dialog, which shows spot info.
+     * @param spot - the spot to be open
+     */
     private void openSpotDialog(Spot spot) {
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.open_spot_dialog, null);
@@ -280,6 +292,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.show();
     }
 
+    /**
+     * This method is responsible for initializing the views in the open spot dialog layout.
+     * @param popupView - the layout of the dialog
+     * @param spot - the spot to be open
+     */
     private void initOpenSpotDialogViews(View popupView, Spot spot) {
         this.spotRatingTV = popupView.findViewById(R.id.openSpotDialogRatingTV);
         spotRatingTV.setText("Rating: " + String.format("%.2f", spot.getRating()));
@@ -387,6 +404,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* ========================== <START> Maps Side Menu Block ========================== */
 
+    /**
+     * This method is responsible for initializing the views in the drawer menu.
+     */
     private void initMenuViews() {
         this.menuSlider = findViewById(R.id.mapsMenuSlider);
         menuSlider.setValue(30);
@@ -430,9 +450,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    /**
+     * This method is responsible to load on the map only spots that that contains at least one
+     * of the features selected by the user in the drawer menu.
+     */
     private void filterSpots() {
         if (lastKnownLocation == null) {
             Toast.makeText(this, "No location found!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (allSpots.isEmpty()) {
+            Toast.makeText(this, "No spots found!", Toast.LENGTH_SHORT).show();
+            return;
         }
         
         List<String> selectedFeatures = getSelectedFeatures();
@@ -445,6 +475,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         addSpotsOnMap(filteredSpots);
     }
 
+    /**
+     * This method is responsible for returning a list of strings of all features that are
+     * checked in this.menuFeatureCheckBoxes.
+     * @return - a list of strings of all features that are checked in the drawer menu
+     * (this.menuFeatureCheckBoxes).
+     */
     private List<String> getSelectedFeatures() {
         return menuFeatureCheckBoxes.stream()
                 .filter(checkBox -> checkBox.isChecked())
@@ -457,7 +493,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* ========================== <START> Add Spot Dialog Block ========================== */
 
+    /**
+     * This method is responsible for opening the dialog, which is responsible for creating new spot.
+     */
     private void openAddSpotDialog() {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No Internet connection!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Build Dialog window
         dialogBuilder = new AlertDialog.Builder(this);
         final View popupView = getLayoutInflater().inflate(R.layout.add_spot_dialog, null);
 
@@ -470,6 +515,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         dialog.show();
     }
 
+    /**
+     * This method is responsible for initializing the views in the layout of the add spot dialog.
+     * @param popupView - the layout of the add spot layout
+     */
     private void initAddSpotDialogViews(View popupView) {
         this.addSpotDialogGridLayout = popupView.findViewById(R.id.addSpotDialogGridLayout);
         addSpotDialogGridLayout.setRowCount(Feature.values().length / 2 + 1);
@@ -529,6 +578,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    /**
+     * Starts camera intent using startActivityForResult()
+     */
     public void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, CAMERA_PERMISSION_CODE);
@@ -539,6 +591,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == CAMERA_PERMISSION_CODE) { // In case of canceled camera.
+            if (data == null) {
+                Toast.makeText(this, "No image uploaded!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (data.getExtras() == null) {
                 Toast.makeText(this, "No image uploaded!", Toast.LENGTH_SHORT).show();
             } else {
@@ -562,7 +619,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * This method is responsible for saving the spot in the db if the inputted information is correct.
+     */
     private void saveSpot() {
+
+        // Configuring the location
         String location;
         if (addSpotDialogLocOptionsSpinner.getSelectedItemPosition() == 0) { // Get current location
             if (lastKnownLocation == null) {
@@ -596,7 +658,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
 
-        if (this.addSpotIV.getDrawable() == null) {
+        if (this.addSpotIV.getDrawable() == null) { // Checks if any image was uploaded
             Toast.makeText(this, "Upload a image of the spot!", Toast.LENGTH_LONG).show();
             return;
         }
@@ -613,7 +675,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(MapsActivity.this, "The spot has been saved!", Toast.LENGTH_SHORT).show();
         Toast.makeText(MapsActivity.this, "Thank you for your contribution!", Toast.LENGTH_SHORT).show();
         dialog.dismiss();
-
     }
 
     /* ========================== <END> Add Spot Dialog Block ========================== */
@@ -621,6 +682,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* ========================== <START> Auxiliary Functions Block ========================== */
 
+    /**
+     * This method is responsible for determining whether the user and the spot is close enough.
+     * @param spot - the spot to be checked
+     * @param maxDistance - the max distance that is considered as close enough
+     * @return - whether the spot's location and the last known location of the user are close enough
+     */
     private boolean isUserCloseToSpot(Spot spot, double maxDistance) {
         if (lastKnownLocation == null) {
             return false;
@@ -632,6 +699,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return distanceResult[0] <= maxDistance;
     }
 
+    /**
+     * Given a list of Spot, this method is responsible for adding the spots on the maps.
+     * @param spots - spots to be added to google maps
+     */
     private void addSpotsOnMap(List<Spot> spots) {
         mMap.clear();
         for (Spot spot : spots) {
@@ -644,6 +715,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Given a Spot, this method is responsible for moving the google maps camera on the spot's
+     * location.
+     * @param spot - the spot, whose location will be centered on the google maps camera
+     */
     private void setCameraOnSpot(Spot spot) {
         double[] latLng = spotLocStringToDouble(spot);
 
@@ -657,7 +733,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /**
      * Given Spot object, converts the string location to array of doubles.
-     * @param spot
+     * @param spot - spot, whose location is to be used
      * @return - array of doubles where arr[0] = lat and arr[1] = lng; or null if the spot is null
      */
     private double[] spotLocStringToDouble(Spot spot) {
@@ -689,6 +765,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * This method is responsible for updating this.lastKnownLocation to the most recent device
+     * location.
+     * @param moveCamera - should we move the camera to the newest location or not
+     */
     private void updateDeviceLocation(boolean moveCamera) {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -724,6 +805,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } catch (SecurityException e)  {
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process process = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int exitValue = process.waitFor();
+            return (exitValue == 0);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private boolean isLocationPermissionGranted() {
