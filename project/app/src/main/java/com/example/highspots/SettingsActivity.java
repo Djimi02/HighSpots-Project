@@ -174,7 +174,7 @@ public class SettingsActivity extends AppCompatActivity {
             consoleIBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(SettingsActivity.this, "Console", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SettingsActivity.this, ConsoleActivity.class));
                 }
             });
         }
