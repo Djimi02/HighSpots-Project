@@ -58,8 +58,10 @@
 
             <Button
                 android:id="@+id/SettingsPageLogOutBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:backgroundTint="@color/dark_button_color"
                 android:text="logout"
                 android:layout_marginTop="@dimen/_18sdp"
@@ -69,8 +71,10 @@
 
             <Button
                 android:id="@+id/SettingsPageContactFormBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:backgroundTint="@color/button_yellow"
                 android:text="Contact Form"
                 android:layout_marginTop="@dimen/_18sdp"
@@ -80,8 +84,10 @@
 
             <Button
                 android:id="@+id/SettingsPageChangePassBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:backgroundTint="@color/button_yellow"
                 android:text="Change Password"
                 android:layout_marginTop="@dimen/_18sdp"
@@ -91,8 +97,10 @@
 
             <Button
                 android:id="@+id/SettingsPageChangeEmailBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:backgroundTint="@color/button_yellow"
                 android:text="Change Email"
                 android:layout_marginTop="@dimen/_18sdp"
@@ -102,8 +110,10 @@
 
             <Button
                 android:id="@+id/settingsPageDeleteAccBTN"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_20sdp"
                 android:layout_marginTop="@dimen/_18sdp"
                 android:backgroundTint="@color/button_red"
