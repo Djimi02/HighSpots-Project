@@ -55,6 +55,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         initViews();
     }
 
+    /**
+     * This method is responsible for initializing the views in this activity's layout.
+     */
     private void initViews() {
         this.nickNameTV = findViewById(R.id.HomePageUserNickname);
         this.emailTV = findViewById(R.id.HomePageUserEmail);
@@ -108,6 +111,9 @@ public class HomePageActivity extends AppCompatActivity implements UserDataListe
         });
     }
 
+    /**
+     * This method is responsible for initializing the instance variables of this class.
+     */
     private void initVars() {
         this.repository = UserDataRepository.getInstance();
         repository.addListener(this);
