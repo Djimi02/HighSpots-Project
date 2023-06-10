@@ -44,6 +44,9 @@ public class RegistrationActivity extends AppCompatActivity {
         initViews();
     }
 
+    /**
+     * This method is responsible for initializing the views in this activity.
+     */
     private void initViews() {
         this.emailET = findViewById(R.id.RegistrationPageEmailET);
         this.passwordET = findViewById(R.id.RegistrationPagePasswordET);
@@ -60,6 +63,10 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method is responsible for determining whether the user inputted data is correct.
+     * @return - whether the user inputted data is correct
+     */
     private boolean isDataValid() {
         boolean output = true;
 
@@ -103,6 +110,9 @@ public class RegistrationActivity extends AppCompatActivity {
         return output;
     }
 
+    /**
+     * Tries to register the user via the FirebaseAuth and saves their data in the db.
+     */
     private void register() {
         if (!isDataValid()) {
             return;
@@ -139,11 +149,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void hideSoftKeyboard(View view){
-        InputMethodManager imm =(InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void hideSoftKeyboard(Activity activity) {
