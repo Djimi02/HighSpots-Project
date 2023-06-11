@@ -66,6 +66,11 @@ public class ConsoleActivity extends AppCompatActivity {
         this.userSearchBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (searchUserET.getText().toString().trim().isEmpty()) {
+                    searchUserET.setError("Input user ID!");
+                    return;
+                }
+
                 usersDataReference.child(searchUserET.getText().toString().trim()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DataSnapshot> task) {

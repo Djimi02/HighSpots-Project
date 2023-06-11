@@ -17,26 +17,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/consoleSearchUserET"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:hint="Search user by id"/>
+
 
             <LinearLayout
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_18sdp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/consoleSearchUserET">
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:id="@+id/consoleSearchUserET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search user by id"/>
 
                 <TextView
                     android:id="@+id/consoleUserIDTV"
@@ -88,18 +85,18 @@
                     android:textSize="17sp"
                     android:textIsSelectable="true"/>
 
+                <Button
+                    android:id="@+id/consoleUserSearchBTN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/dark_button_color"
+                    android:text="Search"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_gravity="center"/>
+
             </LinearLayout>
 
-            <Button
-                android:id="@+id/consoleUserSearchBTN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/dark_button_color"
-                android:text="Search"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-                android:layout_marginTop="@dimen/_10sdp"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
