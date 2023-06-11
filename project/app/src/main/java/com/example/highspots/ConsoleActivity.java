@@ -55,6 +55,10 @@ public class ConsoleActivity extends AppCompatActivity {
     private Button spotClearBTN;
     private Button spotDeleteBTN;
 
+    /* Variables */
+    private User lastFetchedUser;
+    private Spot lastFetchedSpot;
+
     /* Database */
     private final DatabaseReference usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
     private final DatabaseReference spotsDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Spots");
@@ -89,7 +93,7 @@ public class ConsoleActivity extends AppCompatActivity {
         userDeleteBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                deleteUser(lastFetchedUser);
             }
         });
 
@@ -109,20 +113,20 @@ public class ConsoleActivity extends AppCompatActivity {
                             return;
                         }
 
-                        User user = task.getResult().getValue(User.class);
+                        lastFetchedUser = task.getResult().getValue(User.class);
 
-                        if (user == null) {
+                        if (lastFetchedUser == null) {
                             Toast.makeText(ConsoleActivity.this, "User with this ID does not exist!", Toast.LENGTH_LONG).show();
                             return;
                         }
 
-                        userIDTV.setText("User ID: " + user.getDbID());
-                        userEmailTV.setText("User Email: " + user.getEmail());
-                        userNicknameTV.setText("User Nickname: " + user.getNickName());
-                        userRoleTV.setText("User role: " + user.getRole());
-                        userNumVisitedSpotsTV.setText("User number of visited spots: " + user.getVisitedSpots().size());
-                        userNumFoundSpotsTV.setText("User number of found spots: " + user.getFoundSpots().size());
-                        userFoundSpotsTV.setText("User found spots' IDs: " + user.getFoundSpots().keySet().toString());
+                        userIDTV.setText("User ID: " + lastFetchedUser.getDbID());
+                        userEmailTV.setText("User Email: " + lastFetchedUser.getEmail());
+                        userNicknameTV.setText("User Nickname: " + lastFetchedUser.getNickName());
+                        userRoleTV.setText("User role: " + lastFetchedUser.getRole());
+                        userNumVisitedSpotsTV.setText("User number of visited spots: " + lastFetchedUser.getVisitedSpots().size());
+                        userNumFoundSpotsTV.setText("User number of found spots: " + lastFetchedUser.getFoundSpots().size());
+                        userFoundSpotsTV.setText("User found spots' IDs: " + lastFetchedUser.getFoundSpots().keySet().toString());
                         userDeleteBTN.setVisibility(View.VISIBLE);
                     }
                 });
@@ -161,7 +165,7 @@ public class ConsoleActivity extends AppCompatActivity {
         spotDeleteBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                deleteSpot(lastFetchedSpot);
             }
         });
 
@@ -182,23 +186,23 @@ public class ConsoleActivity extends AppCompatActivity {
                             return;
                         }
 
-                        Spot spot = task.getResult().getValue(Spot.class);
+                        lastFetchedSpot = task.getResult().getValue(Spot.class);
 
-                        if (spot == null) {
+                        if (lastFetchedSpot == null) {
                             Toast.makeText(ConsoleActivity.this, "Spot with this ID does not exist!", Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         // Insert values from spot
-                        spotIDTV.setText("Spot ID: " + spot.getDbID());
-                        spotCreatorIDTV.setText("Spot creator ID: " + spot.getCreatorID());
-                        spotFeaturesTV.setText("Spot features: " + spot.getFeatures().values().toString());
-                        spotImageNameTV.setText("Spot image name: " + spot.getImageName());
-                        spotLocationTV.setText("Spot location: " + spot.getLocation());
-                        spotNumberOfRatingsTV.setText("Spot number of ratings: " + spot.getNumberOfRatings());
-                        spotRatingTV.setText("Spot rating: " + spot.getRating());
-                        spotNumOfVisitorsTV.setText("Spot number of visitors: " + spot.getVisitors().size());
-                        imageStorageReference.child(spot.getImageName()).getBytes(MAX_IMAGE_SIZE_TO_DOWNLOAD).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        spotIDTV.setText("Spot ID: " + lastFetchedSpot.getDbID());
+                        spotCreatorIDTV.setText("Spot creator ID: " + lastFetchedSpot.getCreatorID());
+                        spotFeaturesTV.setText("Spot features: " + lastFetchedSpot.getFeatures().values().toString());
+                        spotImageNameTV.setText("Spot image name: " + lastFetchedSpot.getImageName());
+                        spotLocationTV.setText("Spot location: " + lastFetchedSpot.getLocation());
+                        spotNumberOfRatingsTV.setText("Spot number of ratings: " + lastFetchedSpot.getNumberOfRatings());
+                        spotRatingTV.setText("Spot rating: " + lastFetchedSpot.getRating());
+                        spotNumOfVisitorsTV.setText("Spot number of visitors: " + lastFetchedSpot.getVisitors().size());
+                        imageStorageReference.child(lastFetchedSpot.getImageName()).getBytes(MAX_IMAGE_SIZE_TO_DOWNLOAD).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                             @Override
                             public void onSuccess(byte[] bytes) {
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
@@ -228,5 +232,48 @@ public class ConsoleActivity extends AppCompatActivity {
                 spotDeleteBTN.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void deleteUser(User user) {
+        if (user == null) {
+            return;
+        }
+
+        // Delete user from the list of visitors of the spots they have visited
+        for (String visitedSpotID : user.getVisitedSpots().keySet()) {
+            spotsDataReference.child(visitedSpotID).child("visitors").child(user.getDbID()).setValue(null);
+        }
+
+        // Delete user from the list of visitors of the spots they have created
+        for (String foundSpotID : user.getFoundSpots().keySet()) {
+            spotsDataReference.child(foundSpotID).child("visitors").child(user.getDbID()).setValue(null);
+            spotsDataReference.child(foundSpotID).child("creatorID").setValue(null);
+        }
+
+        // Delete user from the db
+        usersDataReference.child(user.getDbID()).setValue(null);
+
+        Toast.makeText(this, "User is deleted from db!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Delete user from authentication!", Toast.LENGTH_LONG).show();
+    }
+
+    private void deleteSpot(Spot spot) {
+        if (spot == null) {
+            return;
+        }
+
+        // From each visitor delete the spot from the list of visited spots
+        for (String visitor : spot.getVisitors().keySet()) {
+            usersDataReference.child(visitor).child("visitedSpots").child(spot.getDbID()).setValue(null);
+            usersDataReference.child(visitor).child("ratedSpots").child(spot.getDbID()).setValue(null);
+        }
+
+        // Delete the spot from its creators found spots list
+        if (spot.getCreatorID() != null) {
+            usersDataReference.child(spot.getCreatorID()).child("foundSpots").child(spot.getDbID()).setValue(null);
+        }
+
+        // Delete spot data from db
+        spotsDataReference.child(spot.getDbID()).setValue(null);
     }
 }
