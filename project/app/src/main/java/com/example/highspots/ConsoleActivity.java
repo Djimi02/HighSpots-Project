@@ -123,6 +123,7 @@ public class ConsoleActivity extends AppCompatActivity {
                         userNumVisitedSpotsTV.setText("User number of visited spots: " + user.getVisitedSpots().size());
                         userNumFoundSpotsTV.setText("User number of found spots: " + user.getFoundSpots().size());
                         userFoundSpotsTV.setText("User found spots' IDs: " + user.getFoundSpots().keySet().toString());
+                        userDeleteBTN.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -140,6 +141,7 @@ public class ConsoleActivity extends AppCompatActivity {
                 userNumVisitedSpotsTV.setText("User number of visited spots: ");
                 userNumFoundSpotsTV.setText("User number of found spots: ");
                 userFoundSpotsTV.setText("User found spots' IDs: ");
+                userDeleteBTN.setVisibility(View.GONE);
             }
         });
 
@@ -203,6 +205,7 @@ public class ConsoleActivity extends AppCompatActivity {
                                 spotImageIV.setImageBitmap(bitmap);
                             }
                         });
+                        spotDeleteBTN.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -222,6 +225,7 @@ public class ConsoleActivity extends AppCompatActivity {
                 spotRatingTV.setText("Spot rating: ");
                 spotNumOfVisitorsTV.setText("Spot number of visitors: ");
                 spotImageIV.setImageDrawable(null);
+                spotDeleteBTN.setVisibility(View.GONE);
             }
         });
     }
