@@ -39,6 +39,7 @@ public class ConsoleActivity extends AppCompatActivity {
     private TextView userFoundSpotsTV;
     private Button userSearchBTN;
     private Button userClearBTN;
+    private Button userDeleteBTN;
 
     private EditText searchSpotET;
     private TextView spotIDTV;
@@ -52,6 +53,7 @@ public class ConsoleActivity extends AppCompatActivity {
     private ImageView spotImageIV;
     private Button spotSearchBTN;
     private Button spotClearBTN;
+    private Button spotDeleteBTN;
 
     /* Database */
     private final DatabaseReference usersDataReference = FirebaseDatabase.getInstance("https://highspots-project-default-rtdb.europe-west1.firebasedatabase.app/").getReference("Users");
@@ -82,6 +84,14 @@ public class ConsoleActivity extends AppCompatActivity {
         this.userNumVisitedSpotsTV = findViewById(R.id.consoleUserNumVisitedSpotsTV);
         this.userNumFoundSpotsTV = findViewById(R.id.consoleUserNumFoundSpotsTV);
         this.userFoundSpotsTV = findViewById(R.id.consoleUserFoundSpotsTV);
+
+        this.userDeleteBTN = findViewById(R.id.consoleUserDeleteBTN);
+        userDeleteBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         this.userSearchBTN = findViewById(R.id.consoleUserSearchBTN);
         userSearchBTN.setOnClickListener(new View.OnClickListener() {
@@ -144,6 +154,14 @@ public class ConsoleActivity extends AppCompatActivity {
         this.spotRatingTV = findViewById(R.id.consoleSpotRatingTV);
         this.spotNumOfVisitorsTV = findViewById(R.id.consoleSpotNumberOfVisitorsTV);
         this.spotImageIV = findViewById(R.id.consoleSpotImageIV);
+
+        this.spotDeleteBTN = findViewById(R.id.consoleSpotDeleteBTN);
+        spotDeleteBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         this.spotSearchBTN = findViewById(R.id.consoleSpotSearchBTN);
         spotSearchBTN.setOnClickListener(new View.OnClickListener() {

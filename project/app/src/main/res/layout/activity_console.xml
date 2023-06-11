@@ -100,6 +100,15 @@
                     android:backgroundTint="@color/button_yellow"
                     android:text="Clear" />
 
+                <Button
+                    android:id="@+id/consoleUserDeleteBTN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/button_red"
+                    android:text="Delete"
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -207,6 +216,15 @@
                     android:layout_gravity="center"
                     android:backgroundTint="@color/button_yellow"
                     android:text="Clear" />
+
+                <Button
+                    android:id="@+id/consoleSpotDeleteBTN"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:backgroundTint="@color/button_red"
+                    android:text="Delete"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 
