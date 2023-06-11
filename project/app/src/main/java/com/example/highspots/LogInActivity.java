@@ -201,9 +201,28 @@ public class LogInActivity extends AppCompatActivity {
         auth.signInWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(LogInActivity.this, "Log In was successful!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
-                finish();
+
+                usersDataReference.child(auth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        User user = task.getResult().getValue(User.class);
+
+                        if (user == null) {
+                            Toast.makeText(LogInActivity.this, "No user found for those credentials", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Toast.makeText(LogInActivity.this, "Log In was successful!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LogInActivity.this, HomePageActivity.class));
+                        finish();
+                    }
+                });
+
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
