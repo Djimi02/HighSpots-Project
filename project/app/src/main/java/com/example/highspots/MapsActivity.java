@@ -117,6 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Button rateSpotBTN;
     private Slider openSpotRatingSlider;
     private Button rateSpotWithBTN;
+    private ImageButton reportIBTN;
 
     /* Database */
     private DatabaseReference spotDataReference;
@@ -395,6 +396,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 openSpotIV.setImageBitmap(bitmap);
+            }
+        });
+        
+        this.reportIBTN = popupView.findViewById(R.id.openSpotDialogReportIV);
+        reportIBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MapsActivity.this, "REPORTED", Toast.LENGTH_SHORT).show();
             }
         });
     }
