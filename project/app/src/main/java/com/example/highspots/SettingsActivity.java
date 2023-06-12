@@ -3,11 +3,9 @@ package com.example.highspots;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.MenuItem;
@@ -19,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.highspots.repositories.UserDataRepository;
+import com.example.highspots.services.MailService;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,17 +35,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -423,8 +411,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                 if (stringBuilder.toString().isEmpty()) {
                     emailSubjectET.setError("Add subject!");
+                    return;
                 } else if (stringBuilder.toString().isEmpty()) {
                     emailBodyET.setError("Add your text!");
+                    return;
                 }
 
                 // Append user data to the email body
@@ -435,21 +425,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String emailBodySTR = stringBuilder.toString();
 
                 // Send email in the background
-                new Thread(new Runnable() {
-                    @Override public void run() {
-                        try {
-                            submitForm(emailSubjectSTR, emailBodySTR);
-                        } catch (Exception e) {
-                            System.out.println(e.toString());
-                            return;
-                        }
-
-                        ContextCompat.getMainExecutor(SettingsActivity.this).execute(()  -> {
-                            Toast.makeText(SettingsActivity.this, "Form submitted successfully!", Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        });
-                    }
-                }).start();
+                new MailService(SettingsActivity.this, dialog).sendEmail(emailSubjectSTR, emailBodySTR);
             }
         });
 
@@ -459,43 +435,6 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    /**
-     * This email is responsible for sending email from highspots.sender@gmail.com to
-     * team.highspots@gmail.com.
-     * @param emailSubjectSTR - the subject of the email
-     * @param emailBodySTR - the body of the email
-     * @throws UnsupportedEncodingException
-     * @throws MessagingException
-     */
-    private void submitForm(String emailSubjectSTR, String emailBodySTR) throws UnsupportedEncodingException, MessagingException {
-        final String emailPort = "587"; // gmail's smtp port
-        final String smtpAuth = "true";
-        final String starttls = "true";
-        final String emailHost = "smtp.gmail.com";
-
-        final String fromEmail = "highspots.sender@gmail.com";
-        final String fromPass = "igxdoxsilkwjumlk";
-        List<String> toEmail = new ArrayList<String>() { { add("team.highspots@gmail.com"); } };
-
-        Properties emailProperties = System.getProperties();
-        emailProperties.put("mail.smtp.port", emailPort);
-        emailProperties.put("mail.smtp.auth", smtpAuth);
-        emailProperties.put("mail.smtp.starttls.enable", starttls);
-
-        // Create message
-        Session mailSession = Session.getDefaultInstance(emailProperties, null);
-        MimeMessage emailMessage = new MimeMessage(mailSession);
-        emailMessage.setFrom(new InternetAddress(fromEmail, fromEmail));
-        emailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(toEmail.get(0)));
-        emailMessage.setSubject(emailSubjectSTR);
-        emailMessage.setText(emailBodySTR);
-
-        // Send message
-        Transport transport = mailSession.getTransport("smtp");
-        transport.connect(emailHost, fromEmail, fromPass);
-        transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
-        transport.close();
-    }
 
     private boolean isNetworkAvailable() {
         Runtime runtime = Runtime.getRuntime();
