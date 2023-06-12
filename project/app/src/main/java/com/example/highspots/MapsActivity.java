@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -18,15 +19,22 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +43,7 @@ import com.example.highspots.adapters.FeatureRVAdapter;
 import com.example.highspots.enums.Feature;
 import com.example.highspots.models.Spot;
 import com.example.highspots.repositories.UserDataRepository;
+import com.example.highspots.services.MailService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -118,10 +127,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Slider openSpotRatingSlider;
     private Button rateSpotWithBTN;
     private ImageButton reportIBTN;
+    private AlertDialog reportDialog = null;
+
 
     /* Database */
     private DatabaseReference spotDataReference;
     private StorageReference imageStorageReference;
+    private UserDataRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,6 +283,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 addSpotsOnMap(allSpots);
             }
         });
+
+        this.repository = UserDataRepository.getInstance();
     }
 
 
@@ -403,9 +417,92 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         reportIBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MapsActivity.this, "REPORTED", Toast.LENGTH_SHORT).show();
+                openReportSpotDialog(spot);
             }
         });
+    }
+
+    private void openReportSpotDialog(Spot spot) {
+        View reportLayout = getLayoutInflater().inflate(R.layout.report_dialog, null);
+        EditText editText = reportLayout.findViewById(R.id.reportDialogET);
+        RadioGroup radioGroup = reportLayout.findViewById(R.id.reportDialogRadioGroup);
+
+        // Build the dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setTitle("Report Spot");
+        builder.setPositiveButton("Submit Report", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String subject = "Report";
+                String userData = "User Email: " + repository.getUser().getEmail() + "\n"
+                        + "User ID: " + repository.getUser().getDbID() + "\n"
+                        + "User Nickname: " + repository.getUser().getNickName() + "\n"
+                        + "Spot ID: " + spot.getDbID();
+                RadioButton checkedBTN = reportLayout.findViewById(radioGroup.getCheckedRadioButtonId());
+                String body = "Reason: " + checkedBTN.getText() + "\n"
+                        + editText.getText().toString().trim() + "\n"
+                        + userData;
+
+                new MailService(MapsActivity.this, null).sendEmail(subject, body);
+            }
+        });
+
+        // Inflate the layout
+        builder.setView(reportLayout);
+
+        // Initialize the layout views
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (reportDialog == null) {
+                    return;
+                }
+
+                if (reportDialog.getButton(AlertDialog.BUTTON_POSITIVE) == null) {
+                    return;
+                }
+
+                if (editText.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
+                    reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                } else {
+                    reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+            }
+        });
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (reportDialog == null) {
+                    return;
+                }
+
+                if (reportDialog.getButton(AlertDialog.BUTTON_POSITIVE) == null) {
+                    return;
+                }
+
+                if (editText.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
+                    reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                } else {
+                    reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                }
+            }
+        });
+
+        // Show the dialog
+        reportDialog = builder.create();
+        reportDialog.show();
+
+        // The button is disabled until user filled everything in correctly
+        reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
     }
 
     /* ========================== <END> Open Spot Dialog Block ========================== */
