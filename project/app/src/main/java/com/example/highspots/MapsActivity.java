@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final double ALLOWED_USER_SPOT_DISTANCE = 100;
     private final int CAMERA_PERMISSION_CODE = 100;
     private final long MAX_IMAGE_SIZE_TO_DOWNLOAD = 1024 * 1024;
+    private final int TOP_SPOTS_NUM = 2;
 
     /* Google Maps */
     private GoogleMap mMap;
@@ -90,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /* Variables */
     private List<Spot> allSpots = new ArrayList<>();
     private List<Spot> mySpots = new ArrayList<>();
+    private List<Spot> topSpots = new ArrayList<>();
     private Map<Marker, Spot> markerSpotMap = new HashMap<>();
 
     /* Maps Views */
@@ -262,7 +264,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     allSpots.add(homePageSelectedSpot);
                     mySpots.add(homePageSelectedSpot);
                     setCameraOnSpot(homePageSelectedSpot);
-                } else {
                 }
 
                 for (DataSnapshot ds : task.getResult().getChildren()) {
@@ -278,13 +279,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
 
+                    // be careful when uncommenting which spots are being saved
+                    // only spots in the area should be saved except from the top spots
+//                    if (!isUserCloseToSpot(spot, menuSlider.getValue() * 1000)) {
+//                        continue; // uncomment the if-statement later
+//                    }
+                    allSpots.add(spot);
+
+                    // Saving in separate lists only my spots
                     if (spot.getCreatorID() == null ? repository.getUser().getDbID() == null : spot.getCreatorID().equals(repository.getUser().getDbID())) {
                         mySpots.add(spot);
                     }
 
-//                    if (isUserCloseToSpot(spot, menuSlider.getValue() * 1000)) {
-                        allSpots.add(spot); // uncomment the if-statement later
-//                    }
                 }
                 
                 addSpotsOnMap(allSpots);
