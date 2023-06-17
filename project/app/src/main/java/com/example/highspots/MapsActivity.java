@@ -50,6 +50,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -88,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* Variables */
     private List<Spot> allSpots = new ArrayList<>();
+    private List<Spot> mySpots = new ArrayList<>();
     private Map<Marker, Spot> markerSpotMap = new HashMap<>();
 
     /* Maps Views */
@@ -258,6 +260,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Spot homePageSelectedSpot = (Spot) getIntent().getSerializableExtra("Spot");
                 if (homePageSelectedSpot != null) {
                     allSpots.add(homePageSelectedSpot);
+                    mySpots.add(homePageSelectedSpot);
                     setCameraOnSpot(homePageSelectedSpot);
                 } else {
                 }
@@ -273,6 +276,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if (spot.getDbID().equals(homePageSelectedSpot.getDbID())) { // Handles duplicates
                             continue;
                         }
+                    }
+
+                    if (spot.getCreatorID() == null ? repository.getUser().getDbID() == null : spot.getCreatorID().equals(repository.getUser().getDbID())) {
+                        mySpots.add(spot);
                     }
 
 //                    if (isUserCloseToSpot(spot, menuSlider.getValue() * 1000)) {
@@ -424,7 +431,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void openReportSpotDialog(Spot spot) {
         View reportLayout = getLayoutInflater().inflate(R.layout.report_dialog, null);
-        EditText editText = reportLayout.findViewById(R.id.reportDialogET);
+        EditText userInputET = reportLayout.findViewById(R.id.reportDialogET);
         RadioGroup radioGroup = reportLayout.findViewById(R.id.reportDialogRadioGroup);
 
         // Build the dialog
@@ -439,7 +446,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         + "Spot ID: " + spot.getDbID();
                 RadioButton checkedBTN = reportLayout.findViewById(radioGroup.getCheckedRadioButtonId());
                 String body = "Reason: " + checkedBTN.getText() + "\n"
-                        + editText.getText().toString().trim() + "\n"
+                        + userInputET.getText().toString().trim() + "\n"
                         + userData;
 
                 new MailService(MapsActivity.this, null).sendEmail(subject, body);
@@ -461,14 +468,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
 
-                if (editText.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
+                if (userInputET.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
                     reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                 } else {
                     reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
                 }
             }
         });
-        editText.addTextChangedListener(new TextWatcher() {
+        userInputET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -489,7 +496,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return;
                 }
 
-                if (editText.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
+                if (userInputET.getText().toString().length() > 14 && radioGroup.getCheckedRadioButtonId() != -1) {
                     reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
                 } else {
                     reportDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
@@ -816,7 +823,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lat = latLng[0];
             double lng = latLng[1];
 
-            Marker pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+            Marker pin;
+            if (mySpots.contains(spot)) {
+                System.out.println("my spot id: " + spot.getDbID());
+                pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng))
+                        .icon(BitmapDescriptorFactory
+                                .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            } else {
+                System.out.println("NOT my spot id: " + spot.getDbID());
+                pin = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+            }
             markerSpotMap.put(pin, spot);
         }
     }
