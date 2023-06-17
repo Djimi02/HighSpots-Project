@@ -16,6 +16,7 @@ public class Spot implements Serializable {
     private Map<String, String> visitors = new HashMap<>();
     private String imageName;
     private String creatorID;
+    private Map<String, List<String>> comments = new HashMap<>();
 
     public Spot() { }
 
@@ -92,6 +93,22 @@ public class Spot implements Serializable {
 
     public void setImageName(String imageName) {
         this.imageName = imageName;
+    }
+
+    public void setFeatures(Map<String, String> features) {
+        this.features = features;
+    }
+
+    public void setVisitors(Map<String, String> visitors) {
+        this.visitors = visitors;
+    }
+
+    public Map<String, List<String>> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<String, List<String>> comments) {
+        this.comments = comments;
     }
 
     public void addNewRating(double rating) {
