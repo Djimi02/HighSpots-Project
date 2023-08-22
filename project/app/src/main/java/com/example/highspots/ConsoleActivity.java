@@ -275,5 +275,10 @@ public class ConsoleActivity extends AppCompatActivity {
 
         // Delete spot data from db
         spotsDataReference.child(spot.getDbID()).setValue(null);
+
+        // Delete spot image from storage
+        imageStorageReference.child(spot.getImageName()).delete();
+
+        Toast.makeText(this, "Spot has been deleted successfully!", Toast.LENGTH_LONG).show();
     }
 }
