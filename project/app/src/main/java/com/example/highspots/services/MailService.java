@@ -64,7 +64,7 @@ public class MailService {
         final String emailHost = "smtp.gmail.com";
 
         final String fromEmail = "highspots.sender@gmail.com";
-        final String fromPass = "igxdoxsilkwjumlk";
+        final String fromPass = "niex brig olzv rxpp";
         List<String> toEmail = new ArrayList<String>() { { add("team.highspots@gmail.com"); } };
 
         Properties emailProperties = System.getProperties();
