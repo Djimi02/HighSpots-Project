@@ -58,7 +58,7 @@ A photo from the database showing how User objects are stored is shown below. Ea
 
 ![User object in the database](https://github.com/Djimi02/HighSpots-Project/blob/main/images/UserDatabase.png)
 
-Follow a photo from the database showing how Spot objects are stored:
+Follows a photo from the database showing how Spot objects are stored:
 
 ![Spot object in the database](https://github.com/Djimi02/HighSpots-Project/blob/main/images/SpotDatabase.png)
 
